@@ -11,10 +11,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/Enrollment.php';
+require_once __DIR__ . '/../models/User.php';
+require_once __DIR__ . '/../models/Transaction.php';
 require_once __DIR__ . '/../config/jwt.php';
 
 $database = new Database();
 $enrollment = new Enrollment($database);
+$userModel = new User($database);
+$transaction = new Transaction($database);
 
 $user_id = JWT::getUserId();
 if (!$user_id) {
@@ -119,7 +123,8 @@ if ($method === 'POST') {
 
             // Verify lesson belongs to this teacher's enrollment
             $checkStmt = $conn->prepare(
-                "SELECT l.*, us.user_id FROM lessons l
+                "SELECT l.*, us.user_id, us.credits, us.skill_name, e.learner_id
+                 FROM lessons l
                  JOIN enrollments e ON l.enrollment_id = e.id
                  JOIN user_skills us ON e.offer_id = us.id
                  WHERE l.enrollment_id = ? AND l.lesson_number = ? AND us.user_id = ?"
@@ -134,6 +139,19 @@ if ($method === 'POST') {
 
             if ($lesson['status'] === 'completed') {
                 echo json_encode(['success' => false, 'data' => ['error' => 'Lesson already completed']]);
+                exit;
+            }
+
+            // Check remaining lessons
+            $eCheck = $conn->prepare("SELECT remaining_lessons, completed_lessons FROM enrollments WHERE id = ?");
+            $eCheck->execute([$enrollment_id]);
+            $eData = $eCheck->fetch();
+            if ((int)($eData['remaining_lessons'] ?? 0) <= 0) {
+                echo json_encode(['success' => false, 'data' => [
+                    'error' => 'No remaining lessons to complete',
+                    'completed_lessons' => (int)($eData['completed_lessons'] ?? 0),
+                    'remaining_lessons' => 0,
+                ]]);
                 exit;
             }
 
@@ -157,7 +175,29 @@ if ($method === 'POST') {
             );
             $updateEnrollment->execute([$enrollment_id]);
 
-            echo json_encode(['success' => true, 'data' => ['message' => 'Lesson marked as completed']]);
+            // Per-lesson payment: transfer credits from learner to teacher
+            $creditsPerSession = (int)($lesson['credits'] ?? 0);
+            $learner_id = (int)($lesson['learner_id'] ?? 0);
+            if ($creditsPerSession > 0 && $learner_id > 0) {
+                $userModel->updateCredits($learner_id, -$creditsPerSession);
+                $userModel->updateCredits($user_id, $creditsPerSession);
+                $transaction->create($learner_id, 'spent', $creditsPerSession,
+                    "Lesson {$lesson_number} completed: " . ($lesson['skill_name'] ?? 'Lesson'), $enrollment_id);
+                $transaction->create($user_id, 'earned', $creditsPerSession,
+                    "Lesson {$lesson_number} completed by learner", $enrollment_id);
+            }
+
+            // Fetch fresh stats
+            $finalStmt = $conn->prepare("SELECT completed_lessons, remaining_lessons FROM enrollments WHERE id = ?");
+            $finalStmt->execute([$enrollment_id]);
+            $finalStats = $finalStmt->fetch();
+
+            echo json_encode(['success' => true, 'data' => [
+                'message' => 'Lesson marked as completed',
+                'completed_lessons' => (int)($finalStats['completed_lessons'] ?? 0),
+                'remaining_lessons' => (int)($finalStats['remaining_lessons'] ?? 0),
+                'credits_transferred' => $creditsPerSession,
+            ]]);
             break;
 
         default:

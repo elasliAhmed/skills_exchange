@@ -95,9 +95,9 @@ class API {
         return this.request(q, 'GET');
     }
 
-    markLessonComplete(data) {
-        return this.request('teacher.php', 'POST', { action: 'complete_lesson', ...data });
-    }
+markLessonComplete(data) {
+         return this.request('enrollments.php', 'POST', { action: 'complete_lesson', ...data });
+     }
 
     // Lesson request methods
     createRequest(data) {
