@@ -1,0 +1,13 @@
+RewriteEngine On
+RewriteBase /skills_exchange/
+
+# Allow access to the frontend directory directly
+RewriteRule ^frontend/ - [L]
+
+# Route API requests through the router
+RewriteRule ^backend/api/(.*)$ /skills_exchange/backend/api/index.php [L,QSA]
+
+# Clean frontend URLs → /frontend/index.html (React Router / pushState support)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ /skills_exchange/frontend/index.html [L]

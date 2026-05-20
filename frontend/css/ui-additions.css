@@ -1,0 +1,139 @@
+/* UI Additions - Enhanced styling for Skills Exchange Platform */
+
+/* Page background with gradient accents */
+body {
+    background:
+        radial-gradient(
+            1200px 500px at 10% -10%,
+            rgba(79, 70, 229, 0.06),
+            transparent 60%
+        ),
+        radial-gradient(
+            900px 400px at 90% 0%,
+            rgba(16, 185, 128, 0.06),
+            transparent 55%
+        ),
+        var(--color-bg);
+}
+
+/* Header scroll shadow */
+.header {
+    transition: box-shadow 0.2s ease;
+}
+
+.header.scrolled {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Nav links */
+.nav a {
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.nav a:hover {
+    background: rgba(79, 70, 229, 0.05);
+    color: var(--color-primary);
+}
+
+/* Hero section enhancements */
+.hero {
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+}
+
+.hero h2 {
+    font-size: 56px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+@media (max-width: 768px) {
+    .hero h2 {
+        font-size: 36px;
+    }
+}
+
+/* Skill card accent bar animation */
+.skill-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.skill-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    transition: height 0.2s ease;
+}
+
+.skill-card:hover::before {
+    height: 6px;
+}
+
+/* Card hover effect */
+.skill-card,
+.feature-card,
+.modal-content {
+    border: 1px solid var(--color-border);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.skill-card:hover {
+    transform: translateY(-2px);
+}
+
+/* Focus states */
+.btn:focus-visible,
+.nav a:focus-visible,
+.tab-btn:focus-visible,
+.modal-close:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* Empty state */
+.empty-state {
+    padding: 24px;
+    text-align: center;
+    color: var(--color-text-secondary);
+    background: var(--color-surface);
+    border-radius: 12px;
+    border: 1px solid var(--color-border);
+}
+
+/* Rating stars */
+.rating {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #F59E0B;
+}
+
+/* Success badge for credits earned */
+.credits-badge {
+    background: rgba(16, 185, 128, 0.1);
+    color: #059669;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Avatar in card */
+.card-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 12px;
+}

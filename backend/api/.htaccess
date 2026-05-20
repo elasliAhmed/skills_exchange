@@ -1,0 +1,6 @@
+RewriteEngine On
+RewriteBase /skills_exchange/backend/api/
+
+# Pass the Authorization header through to PHP (required for JWT auth on Apache)
+RewriteCond %{HTTP:Authorization} ^(.+)
+RewriteRule ^ - [E=HTTP_AUTHORIZATION:%1]

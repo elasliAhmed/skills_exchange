@@ -1,0 +1,690 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Skills Exchange - Teach & Learn Skills</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+			rel="stylesheet"
+		/>
+		<link rel="stylesheet" href="/skills_exchange/frontend/css/style.css" />
+		<link rel="stylesheet" href="/skills_exchange/frontend/css/auth.css" />
+		<link
+			rel="stylesheet"
+			href="/skills_exchange/frontend/css/ui-additions.css"
+		/>
+	</head>
+	<body>
+		<div id="app">
+			<header class="header">
+				<div class="container">
+					<a href="#" data-page="home" class="logo"
+						>Skills Exchange</a
+					>
+					<nav class="nav" id="nav">
+						<a href="#" data-page="home">Home</a>
+
+						<a href="#" data-page="offers" class="user-only"
+							>Teaching Offers</a
+						>
+						<a href="#" data-page="login" class="auth-only"
+							>Login</a
+						>
+						<a href="#" data-page="register" class="auth-only"
+							>Register</a
+						>
+						<a href="#" data-page="dashboard" class="user-only"
+							>Dashboard</a
+						>
+						<a href="#" data-page="profile" class="user-only"
+							>Profile</a
+						>
+						<a href="#" id="logout" class="user-only">Logout</a>
+					</nav>
+					<div
+						id="header-credits"
+						class="header-credits user-only"
+						style="display: none"
+					>
+						<svg
+							width="18"
+							height="18"
+							viewBox="0 0 200 200"
+							xmlns="http://www.w3.org/2000/svg"
+							style="flex-shrink: 0"
+						>
+							<g transform="translate(100, 100)">
+								<ellipse
+									cx="0"
+									cy="0"
+									rx="80"
+									ry="80"
+									fill="#7c3aed"
+								/>
+								<ellipse
+									cx="0"
+									cy="0"
+									rx="80"
+									ry="80"
+									fill="none"
+									stroke="#6d28d9"
+									stroke-width="5"
+								/>
+								<ellipse
+									cx="0"
+									cy="0"
+									rx="68"
+									ry="68"
+									fill="#8b5cf6"
+								/>
+								<ellipse
+									cx="-20"
+									cy="-30"
+									rx="16"
+									ry="8"
+									fill="#c4b5fd"
+									opacity="0.5"
+									transform="rotate(-35)"
+								/>
+								<text
+									x="0"
+									y="6"
+									fill="#f5f3ff"
+									font-family="Georgia, serif"
+									font-weight="700"
+									font-size="56"
+									text-anchor="middle"
+									dominant-baseline="central"
+								>
+									C
+								</text>
+							</g>
+						</svg>
+						<span id="header-credits-amount">0</span>
+					</div>
+				</div>
+			</header>
+
+			<main class="main-content">
+				<section id="page-home" class="page active">
+					<!-- Hero section -->
+					<div class="hero">
+						<h2>Skills Exchange</h2>
+						<p>
+							Exchange skills with others using our credit-based
+							platform. Teach what you know, learn what you don't.
+						</p>
+						<div class="hero-buttons">
+							<button
+								class="btn btn-secondary"
+								data-page="offers"
+							>
+								Browse Offers
+							</button>
+							<button
+								class="btn btn-primary"
+								data-page="register"
+							>
+								Get Started
+							</button>
+						</div>
+					</div>
+
+					<!-- How it works section -->
+					<div class="container">
+						<h2 class="section-heading">How it works</h2>
+						<div class="features">
+							<div class="feature-card">
+								<h3>Post a Skill</h3>
+								<p>
+									Share what you know and set your
+									availability
+								</p>
+							</div>
+							<div class="feature-card">
+								<h3>Find a Skill</h3>
+								<p>
+									Browse skills offered by others in the
+									community
+								</p>
+							</div>
+							<div class="feature-card">
+								<h3>Book a Session</h3>
+								<p>Schedule a video call using your credits</p>
+							</div>
+						</div>
+
+						<!-- Why us section -->
+						<h2 class="section-heading">Why us</h2>
+						<div class="features">
+							<div class="feature-card">
+								<h3>Learn from real people</h3>
+								<p>
+									Connect directly with experts and
+									enthusiasts
+								</p>
+							</div>
+							<div class="feature-card">
+								<h3>Teach what you know</h3>
+								<p>Share your skills and earn credits</p>
+							</div>
+							<div class="feature-card">
+								<h3>Schedule video sessions</h3>
+								<p>
+									Meet face-to-face through our integrated
+									video calls
+								</p>
+							</div>
+							<div class="feature-card">
+								<h3>Free to join</h3>
+								<p>Get started without any upfront cost</p>
+							</div>
+						</div>
+					</div>
+
+					<!-- Final call to action -->
+					<div class="hero" style="margin-top: 60px">
+						<p>Ready to start learning or teaching?</p>
+						<button class="btn btn-primary" data-page="register">
+							Join Now
+						</button>
+					</div>
+
+					<!-- Footer -->
+					<footer
+						style="
+							text-align: center;
+							padding: 40px 0;
+							color: var(--color-text-secondary);
+						"
+					>
+						<p>&copy; 2026 Skills Exchange. All rights reserved.</p>
+					</footer>
+				</section>
+
+				<!-- Edit Offer Modal -->
+				<div
+					id="edit-offer-modal"
+					class="modal-overlay"
+					style="display: none"
+				>
+					<div class="modal-content">
+						<div class="modal-header">
+							<h3>Edit Teaching Offer</h3>
+							<button
+								type="button"
+								class="modal-close"
+								id="edit-offer-close"
+							>
+								&times;
+							</button>
+						</div>
+						<form id="edit-offer-form">
+							<input
+								type="hidden"
+								name="offer_id"
+								id="edit-offer-id"
+							/>
+
+							<div class="form-group">
+								<label for="edit-skill-name"
+									>What do you teach?</label
+								>
+								<input
+									type="text"
+									name="skill_name"
+									id="edit-skill-name"
+									placeholder="e.g. Python Programming"
+									required
+								/>
+							</div>
+							<div class="form-group">
+								<label for="edit-skill-description"
+									>Describe what you teach</label
+								>
+								<textarea
+									name="skill_description"
+									id="edit-skill-description"
+									rows="2"
+									placeholder="What topic or subject do you cover?"
+								></textarea>
+							</div>
+							<div class="form-group">
+								<label for="edit-skill-level">Your level</label>
+								<select
+									name="skill_level"
+									id="edit-skill-level"
+								>
+									<option value="">
+										Select your level...
+									</option>
+									<option value="Beginner">Beginner</option>
+									<option value="Intermediate">
+										Intermediate
+									</option>
+									<option value="Advanced">Advanced</option>
+									<option value="Expert">Expert</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label for="edit-lesson-format"
+									>How the lessons work</label
+								>
+								<textarea
+									name="lesson_format"
+									id="edit-lesson-format"
+									rows="2"
+									placeholder="How will the sessions be structured?"
+								></textarea>
+							</div>
+							<div class="form-group">
+								<label for="edit-learner-gains"
+									>What they'll get</label
+								>
+								<textarea
+									name="learner_gains"
+									id="edit-learner-gains"
+									rows="2"
+									placeholder="What will learners achieve or take away?"
+								></textarea>
+							</div>
+							<div class="form-group">
+								<label for="edit-credits"
+									>Credits per Lesson</label
+								>
+								<input
+									type="number"
+									name="credits"
+									id="edit-credits"
+									min="1"
+									required
+								/>
+							</div>
+							<div class="form-group">
+								<label for="edit-lesson-count"
+									>Number of Lessons</label
+								>
+								<input
+									type="number"
+									name="lesson_count"
+									id="edit-lesson-count"
+									min="1"
+									value="1"
+									required
+								/>
+							</div>
+							<div class="modal-actions">
+								<button
+									type="button"
+									class="btn btn-secondary"
+									id="edit-offer-cancel"
+								>
+									Cancel
+								</button>
+								<button type="submit" class="btn btn-primary">
+									Save Changes
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+
+				<!-- Learners Modal -->
+				<div
+					id="learners-modal"
+					class="modal-overlay"
+					style="display: none"
+				>
+					<div class="modal-content">
+						<div class="modal-header">
+							<h3>Enrolled Learners</h3>
+							<button
+								type="button"
+								class="modal-close"
+								id="learners-close"
+							>
+								&times;
+							</button>
+						</div>
+						<div id="learners-list"></div>
+					</div>
+				</div>
+
+				<!-- Enrollment Details Modal (Teacher) -->
+				<div
+					id="teacher-enrollment-modal"
+					class="modal-overlay"
+					style="display: none"
+				>
+					<div class="modal-content lesson-details-modal">
+						<div class="modal-header">
+							<h3 id="modal-course-title">Course</h3>
+							<button
+								type="button"
+								class="modal-close"
+								id="teacher-enrollment-close"
+							>
+								&times;
+							</button>
+						</div>
+						<div id="modal-student-info" style="margin-bottom:var(--spacing-md);color:var(--color-text-secondary);"></div>
+						<div id="teacher-lessons-list"></div>
+						<div id="teacher-comment-area" style="display:none;margin-top:var(--spacing-md);padding-top:var(--spacing-md);border-top:1px solid var(--color-border);">
+							<div class="form-group">
+								<label for="mark-complete-comment">Comment (shown to student)</label>
+								<textarea id="mark-complete-comment" rows="2" placeholder="e.g. Finished HTML basics"></textarea>
+							</div>
+						</div>
+						<div class="modal-actions">
+							<button type="button" class="btn btn-secondary" id="teacher-modal-cancel">Close</button>
+						</div>
+					</div>
+				</div>
+
+				<section id="page-login" class="page">
+					<div class="auth-form-container">
+						<h2>Login</h2>
+						<form id="login-form">
+							<div class="form-group">
+								<label>Username</label>
+								<input type="text" name="username" required />
+							</div>
+							<div class="form-group">
+								<label>Password</label>
+								<input
+									type="password"
+									name="password"
+									required
+								/>
+							</div>
+							<button type="submit" class="btn btn-primary">
+								Login
+							</button>
+						</form>
+						<p class="auth-switch">
+							Don't have an account?
+							<a href="#" data-page="register">Register</a>
+						</p>
+					</div>
+				</section>
+
+				<section id="page-register" class="page">
+					<div class="auth-form-container">
+						<h2>Register</h2>
+						<form id="register-form">
+							<div class="form-group">
+								<label>Username</label>
+								<input type="text" name="username" required />
+							</div>
+							<div class="form-group">
+								<label>Email</label>
+								<input type="email" name="email" required />
+							</div>
+							<div class="form-group">
+								<label>Password</label>
+								<input
+									type="password"
+									name="password"
+									required
+								/>
+							</div>
+							<div class="form-group">
+								<label>Full Name</label>
+								<input type="text" name="full_name" />
+							</div>
+							<button type="submit" class="btn btn-primary">
+								Register
+							</button>
+						</form>
+						<p class="auth-switch">
+							Already have an account?
+							<a href="#" data-page="login">Login</a>
+						</p>
+					</div>
+				</section>
+
+				<section id="page-offers" class="page">
+					<div class="container">
+						<!-- My Offers Section -->
+						<div class="section-header">
+							<h2>My Offers</h2>
+							<button
+								class="btn btn-primary"
+								id="add-offer-btn"
+								style="margin-left: auto"
+							>
+								+ Create New Offer
+							</button>
+						</div>
+						<div id="my-offers-list" class="skills-grid"></div>
+						<p
+							id="my-offers-empty"
+							class="no-offers-msg"
+							style="display: none"
+						>
+							No offers yet. Create your first offer above.
+						</p>
+
+						<hr class="section-divider" />
+
+						<!-- Browse Offers Section -->
+						<div class="section-header">
+							<h2>Browse Offers</h2>
+						</div>
+						<div id="teaching-offers-list" class="skills-grid">
+							<p class="no-offers-msg">Loading offers...</p>
+						</div>
+					</div>
+				</section>
+
+				<section id="page-add-offer" class="page">
+					<div class="auth-form-container">
+						<h2>Create Teaching Offer</h2>
+						<form id="add-offer-form">
+							<div class="form-group">
+								<label for="offer-skill-name"
+									>What do you teach?</label
+								>
+								<input
+									type="text"
+									name="skill_name"
+									id="offer-skill-name"
+									placeholder="e.g. Python Programming"
+									required
+								/>
+							</div>
+							<div class="form-group">
+								<label for="offer-skill-description"
+									>Describe what you teach</label
+								>
+								<textarea
+									name="skill_description"
+									id="offer-skill-description"
+									rows="3"
+									placeholder="What topic or subject do you cover?"
+								></textarea>
+							</div>
+							<div class="form-group">
+								<label for="offer-skill-level"
+									>Your level</label
+								>
+								<select
+									name="skill_level"
+									id="offer-skill-level"
+								>
+									<option value="">
+										Select your level...
+									</option>
+									<option value="Beginner">Beginner</option>
+									<option value="Intermediate">
+										Intermediate
+									</option>
+									<option value="Advanced">Advanced</option>
+									<option value="Expert">Expert</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label for="offer-lesson-format"
+									>How the lessons work</label
+								>
+								<textarea
+									name="lesson_format"
+									id="offer-lesson-format"
+									rows="3"
+									placeholder="How will the sessions be structured?"
+								></textarea>
+							</div>
+							<div class="form-group">
+								<label for="offer-learner-gains"
+									>What they'll get</label
+								>
+								<textarea
+									name="learner_gains"
+									id="offer-learner-gains"
+									rows="3"
+									placeholder="What will learners achieve or take away?"
+								></textarea>
+							</div>
+							<div class="form-group">
+								<label for="offer-lesson-count"
+									>Number of Lessons</label
+								>
+								<input
+									type="number"
+									name="lesson_count"
+									id="offer-lesson-count"
+									min="1"
+									value="1"
+									required
+								/>
+							</div>
+						<div class="form-group">
+							<label for="offer-credits"
+								>Credits per Lesson</label
+							>
+							<input
+								type="number"
+								name="credits"
+								id="offer-credits"
+								min="1"
+								value="5"
+								required
+							/>
+						</div>
+							<button type="submit" class="btn btn-primary">
+								Create Offer
+							</button>
+						</form>
+					</div>
+				</section>
+
+				<section id="page-dashboard" class="page">
+					<div class="container">
+						<h2 class="section-heading">My Enrollments</h2>
+
+						<!-- Filter tabs -->
+						<div class="dashboard-tabs">
+							<button class="tab-btn active" data-tab="all">
+								All
+							</button>
+							<button class="tab-btn" data-tab="pending">
+								Pending
+							</button>
+							<button class="tab-btn" data-tab="confirmed">
+								Confirmed
+							</button>
+							<button class="tab-btn" data-tab="completed">
+								Completed
+							</button>
+						</div>
+
+						<!-- ═══ Teacher Dashboard ═══ -->
+
+						<!-- Stat Cards -->
+						<div id="teacher-stats" class="teacher-stats-grid">
+							<div class="teacher-stat-card">
+								<div class="teacher-stat-icon">📚</div>
+								<div class="teacher-stat-info">
+									<span class="teacher-stat-value" id="stat-students">0</span>
+									<span class="teacher-stat-label">Total Students</span>
+								</div>
+							</div>
+							<div class="teacher-stat-card">
+								<div class="teacher-stat-icon">🟢</div>
+								<div class="teacher-stat-info">
+									<span class="teacher-stat-value" id="stat-active">0</span>
+									<span class="teacher-stat-label">Active Enrollments</span>
+								</div>
+							</div>
+							<div class="teacher-stat-card">
+								<div class="teacher-stat-icon">✅</div>
+								<div class="teacher-stat-info">
+									<span class="teacher-stat-value" id="stat-completed">0</span>
+									<span class="teacher-stat-label">Completed Lessons</span>
+								</div>
+							</div>
+						</div>
+
+						<!-- Enrollments List -->
+						<h3 style="margin-top: var(--spacing-xxl);">My Students</h3>
+						<div id="teacher-enrollments-list" class="skills-grid">
+							<p class="no-offers-msg">Loading your students...</p>
+						</div>
+
+						<!-- ═══ End Teacher Dashboard ═══ -->
+					</div>
+				</section>
+
+				<section id="page-profile" class="page">
+					<div class="container">
+						<h2>My Profile</h2>
+						<form id="profile-form">
+							<div class="form-group">
+								<label>Full Name</label>
+								<input type="text" name="full_name" />
+							</div>
+							<div class="form-group">
+								<label>Bio</label>
+								<textarea name="bio" rows="4"></textarea>
+							</div>
+							<button type="submit" class="btn btn-primary">
+								Update Profile
+							</button>
+						</form>
+					</div>
+				</section>
+
+				<section id="page-video" class="page">
+					<div class="container">
+						<h2>Video Call</h2>
+						<div class="video-container">
+							<video id="local-video" autoplay muted></video>
+							<video id="remote-video" autoplay></video>
+						</div>
+						<div class="video-controls">
+							<button
+								id="toggle-camera"
+								class="btn btn-secondary"
+							>
+								Toggle Camera
+							</button>
+							<button id="toggle-mic" class="btn btn-secondary">
+								Toggle Mic
+							</button>
+							<button id="end-call" class="btn btn-danger">
+								End Call
+							</button>
+						</div>
+					</div>
+				</section>
+			</main>
+		</div>
+
+		<script src="js/api.js"></script>
+		<script src="js/app.js"></script>
+		<script src="js/video.js"></script>
+	</body>
+</html>
