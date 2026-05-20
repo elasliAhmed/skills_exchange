@@ -10,45 +10,45 @@ class Enrollment {
 
     public function create($offer_id, $learner_id) {
         $conn = $this->db->connect();
-        
+
         // Get the offer details including lessons_count
         $offer = $this->getOfferById($offer_id);
         if (!$offer) {
-            return false;
+            return [false, 0];
         }
-        
-        $lessons_count = $offer['lessons_count'] ?? 1;
-        
-        // Insert enrollment with lesson counts
-        $query = "INSERT INTO {$this->table} (offer_id, learner_id, status, completed_lessons, remaining_lessons) 
+
+        $offerLessons  = $offer['lessons_count'];
+        $lessons_count = is_null($offerLessons) ? 1 : (int)$offerLessons;  // null→1 (default), 0→0 (teacher chose none), N→N
+        $remaining     = $lessons_count;
+
+        // Insert enrollment row
+        $query = "INSERT INTO {$this->table}
+                  (offer_id, learner_id, status, completed_lessons, remaining_lessons)
                   VALUES (?, ?, 'active', 0, ?)";
-        $stmt = $conn->prepare($query);
-        $result = $stmt->execute([$offer_id, $learner_id, $lessons_count]);
-        
-        if ($result) {
-            $enrollment_id = $conn->lastInsertId();
-            
-            // Create lesson records
-            $lessonQuery = "INSERT INTO lessons (enrollment_id, lesson_number, status) VALUES ";
-            $lessonValues = [];
-            $lessonParams = [];
-            
-            for ($i = 1; $i <= $lessons_count; $i++) {
-                $lessonValues[] = "(?, ?, 'pending')";
-                $lessonParams[] = $enrollment_id;
-                $lessonParams[] = $i;
-            }
-            
-            if (!empty($lessonValues)) {
-                $lessonQuery .= implode(", ", $lessonValues);
-                $lessonStmt = $conn->prepare($lessonQuery);
-                $lessonStmt->execute($lessonParams);
-            }
-            
-            return true;
+        $stmt  = $conn->prepare($query);
+        if (!$stmt->execute([$offer_id, $learner_id, $remaining])) {
+            return [false, 0];
         }
-        
-        return false;
+        $enrollment_id = (int)$conn->query("SELECT LAST_INSERT_ID()")->fetchColumn();
+
+        // Create lesson rows (only if lessons_count > 0)
+        if ($lessons_count > 0) {
+            $lessonQuery = "INSERT INTO lessons (enrollment_id, lesson_number, status) VALUES ";
+            $values      = [];
+            $params      = [];
+            for ($i = 1; $i <= $lessons_count; $i++) {
+                $values[]  = "(?, ?, 'pending')";
+                $params[]  = $enrollment_id;
+                $params[]  = $i;
+            }
+            if (!empty($values)) {
+                $lq = $lessonQuery . implode(', ', $values);
+                $ls = $conn->prepare($lq);
+                $ls->execute($params);
+            }
+        }
+
+        return [true, $enrollment_id];
     }
 
     public function getEnrollmentByUserAndOffer($learner_id, $offer_id) {
@@ -75,6 +75,15 @@ class Enrollment {
         $stmt = $conn->prepare($query);
         $stmt->execute([$offer_id]);
         return $stmt->fetch();
+    }
+
+    public function getTotalLessons($offer_id) {
+        $conn = $this->db->connect();
+        $stmt = $conn->prepare(
+            "SELECT COUNT(*) FROM lessons WHERE enrollment_id IN (SELECT id FROM enrollments WHERE offer_id = ?)"
+        );
+        $stmt->execute([$offer_id]);
+        return (int)$stmt->fetchColumn();
     }
 
     public function getLearnerEnrollments($learner_id) {
@@ -114,7 +123,9 @@ class Enrollment {
                           us.lessons_count as lessons_count,
                           e.completed_lessons,
                           e.remaining_lessons,
-                          u.username as learner_username
+                          us.user_id as teacher_id,
+                          u.username as learner_username,
+                          u.full_name as learner_name
                    FROM {$this->table} e
                    JOIN user_skills us ON e.offer_id = us.id
                    JOIN users u ON e.learner_id = u.id

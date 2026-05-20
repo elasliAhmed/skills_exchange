@@ -42,14 +42,16 @@ class UserSkill {
     public function getUserSkills($user_id, $type = null) {
         $conn = $this->db->connect();
         if ($type) {
-            $query = "SELECT us.id as offer_id, us.skill_name as name, us.skill_description as description, us.credits,
+            $query = "SELECT us.id as offer_id, us.skill_name as name, us.skill_description as description,
+                              us.credits, us.lessons_count,
                               us.skill_description, us.skill_level, us.lesson_format, us.learner_gains
                        FROM {$this->table} us
                        WHERE us.user_id = ? AND us.type = ?";
             $stmt = $conn->prepare($query);
             $stmt->execute([$user_id, $type]);
         } else {
-            $query = "SELECT us.id as offer_id, us.skill_name as name, us.skill_description as description, us.type, us.credits,
+            $query = "SELECT us.id as offer_id, us.skill_name as name, us.skill_description as description,
+                              us.type, us.credits, us.lessons_count,
                               us.skill_description, us.skill_level, us.lesson_format, us.learner_gains
                        FROM {$this->table} us
                        WHERE us.user_id = ?";
@@ -65,7 +67,7 @@ class UserSkill {
                           us.skill_name as name,
                           us.skill_description as description,
                           us.skill_level, us.lesson_format, us.learner_gains,
-                          us.credits
+                          us.credits, us.lessons_count
                    FROM {$this->table} us
                    JOIN users u ON us.user_id = u.id
                    WHERE us.type = 'teach'

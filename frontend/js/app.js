@@ -221,24 +221,35 @@ async function loadTeacherEnrollments() {
     }
 
     container.innerHTML = list.map(
-        (e) => `
-        <div class="teacher-enrollment-row">
-            <div class="teacher-enrollment-info">
-                <div class="teacher-enrollment-title">${e.skill_name || 'Untitled'}</div>
-                <div class="teacher-enrollment-sub">${e.learner_username || 'Unknown student'}</div>
-                <div class="teacher-lesson-count">
-                    ${(e.completed_lessons || 0)} / ${(e.lessons_count || 0)} lessons · ${e.remaining_lessons || 0} remaining · <b>${(e.status || '')}</b>
+        (e) => {
+            const lc   = (e.lessons_count      ?? 0);
+            const done = (e.completed_lessons  ?? 0);
+            const rem  = (e.remaining_lessons  ?? 0);
+            const pct  = lc > 0 ? Math.round((done / lc) * 100) : 0;
+            return `
+            <div class="teacher-enrollment-row">
+                <div class="teacher-enrollment-info">
+                    <div class="teacher-enrollment-title">${e.skill_name || 'Untitled'}</div>
+                    <div class="teacher-enrollment-sub">${e.learner_username || 'Unknown student'}</div>
+                    <div style="margin-top:6px;">
+                        <div class="progress-label">
+                            <span>Progress</span>
+                            <span class="progress-text">${done}/${lc} lessons · ${rem} left</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width:${pct}%"></div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <button class="btn btn-primary" onclick="openTeacherEnrollmentModal(${e.id}, '${(e.learner_username || '').replace(/'/g, "\\'")}', '${(e.skill_name || '').replace(/'/g, "\\'")}')">Open</button>
-        </div>
-    `
+                <button class="btn btn-primary" onclick="openTeacherEnrollmentModal(${e.id}, '${(e.learner_username || '').replace(/'/g, "\\'")}', '${(e.skill_name || '').replace(/'/g, "\\'")}', ${(e.credits ?? 0)})">Open</button>
+            </div>`;
+        }
     ).join('');
 }
 
 let _currentTeacherEnrollment = null;
 
-async function openTeacherEnrollmentModal(enrollment_id, student_name, course_title) {
+async function openTeacherEnrollmentModal(enrollment_id, student_name, course_title, credits_per_session) {
     _currentTeacherEnrollment = enrollment_id;
     const result = await apiInstance.getEnrollmentLessons(enrollment_id, student_name);
     if (!result.success) {
@@ -247,34 +258,58 @@ async function openTeacherEnrollmentModal(enrollment_id, student_name, course_ti
     }
     const d = result.data;
 
-    document.getElementById('modal-course-title').textContent = d.course_title || course_title || 'Course';
+    document.getElementById('modal-course-title').textContent =
+        `${d.course_title || course_title || 'Course'}${credits_per_session > 0 ? '  —  ' + credits_per_session + ' credits / lesson' : ''}`;
     document.getElementById('modal-student-info').textContent = 'Student: ' + (d.student_name || 'Unknown');
     document.getElementById('mark-complete-comment').value = '';
 
     const lessonsList = document.getElementById('teacher-lessons-list');
-    const lessons = d.lessons || [];
+    const lessons     = d.lessons  || [];
+    const total       = (d.lessons_count || lessons.length || 1);
+    const done        = lessons.filter(l => l.status === 'completed').length;
+    const pct         = Math.round((done / total) * 100);
+
+    // Lesson count summary bar
+    const summaryHtml = `
+        <div style="margin-bottom:var(--spacing-md);">
+            <div class="progress-label">
+                <span>Lesson Progress</span>
+                <span class="progress-text">${done}/${total} completed</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width:${pct}%"></div>
+            </div>
+        </div>`;
 
     if (lessons.length === 0) {
-        lessonsList.innerHTML = '<p class="no-offers-msg">No lessons for this enrollment.</p>';
+        lessonsList.innerHTML = summaryHtml +
+            '<p class="no-offers-msg">No lessons for this enrollment. Check the offer settings.</p>';
     } else {
-        lessonsList.innerHTML = lessons.map(
+        lessonsList.innerHTML = summaryHtml + lessons.map(
             (l) => {
-                const done = l.status === 'completed';
-                const summary = l.lesson_summary ? `<div class="lesson-summary" style="margin-top:4px;">${l.lesson_summary}</div>` : '';
-                const comment = l.teacher_comment ? `<div class="teacher-comment" style="margin-top:4px;">${l.teacher_comment}</div>` : '';
-                const disabled = done ? 'disabled' : '';
-                const btnLabel = done ? '✓ Done' : 'Mark as Completed';
-                const btnClass  = done ? 'btn btn-secondary' : 'btn btn-primary';
+                const completed = l.status === 'completed';
+                const completedAt = l.completed_at
+                    ? '<small style="color:var(--color-text-muted);margin-left:8px;">' +
+                      new Date(l.completed_at).toLocaleDateString() + '</small>'
+                    : '';
+                const summary = l.lesson_summary ? `<div class="lesson-summary" style="margin-top:6px;">${l.lesson_summary}</div>` : '';
+                const comment = l.teacher_comment ? `<div class="teacher-comment" style="margin-top:6px;">${l.teacher_comment}</div>` : '';
+                const btnDisabled  = completed ? 'disabled' : '';
+                const btnLabel     = completed ? '✓ Done' : 'Mark as Completed';
+                const btnClass     = completed ? 'btn btn-secondary' : 'btn btn-primary';
 
                 return `
-                <div class="lesson-item ${done ? 'completed' : ''}" data-lesson="${l.lesson_number}">
-                    <div>
-                        <span class="lesson-number">Lesson ${l.lesson_number}</span>
-                        <span class="lesson-status ${done ? 'completed' : 'pending'}">${l.status || 'pending'}</span>
+                <div class="lesson-item ${completed ? 'completed' : ''}" data-lesson="${l.lesson_number}">
+                    <div style="min-width:0;">
+                        <div>
+                            <span class="lesson-number">Lesson ${l.lesson_number}</span>
+                            <span class="lesson-status ${completed ? 'completed' : 'pending'}">${l.status || 'pending'}</span>
+                            ${completedAt}
+                        </div>
                         ${summary}
                         ${comment}
                     </div>
-                    <button class="${btnClass}" ${disabled}
+                    <button class="${btnClass}" ${btnDisabled}
                         onclick="markLessonComplete(${enrollment_id}, ${l.lesson_number})">
                         ${btnLabel}
                     </button>
@@ -283,8 +318,6 @@ async function openTeacherEnrollmentModal(enrollment_id, student_name, course_ti
         ).join('');
     }
 
-    const commentArea = document.getElementById('teacher-comment-area');
-    commentArea.style.display = 'none';
     document.getElementById('teacher-enrollment-modal').style.display = 'flex';
 }
 
@@ -305,7 +338,13 @@ async function markLessonComplete(enrollment_id, lesson_number) {
     });
 
     if (result.success) {
-        alert(result.data.message || 'Lesson marked as completed');
+        const credits  = result.data.credits_transferred  || 0;
+        const completed = result.data.completed_lessons  || 0;
+        const remaining = result.data.remaining_lessons  || 0;
+        alert(
+            (result.data.message || 'Lesson marked as completed') +
+            (credits > 0 ? `  \n+${credits} credits transferred to teacher.` : '')
+        );
         openTeacherEnrollmentModal(enrollment_id);
         loadTeacherStats();
     } else {

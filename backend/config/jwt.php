@@ -71,14 +71,6 @@ class JWT {
             $authHeader = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
         }
         
-        // Write to temp log for debugging
-        file_put_contents(sys_get_temp_dir() . '/jwt_debug.log',
-            date('Y-m-d H:i:s') . " authHeader=" . var_export($authHeader, true) .
-            " SERVER=" . var_export($_SERVER['HTTP_AUTHORIZATION'] ?? 'N/A', true) .
-            " REDIRECT=" . var_export($_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? 'N/A', true) . "\n",
-            FILE_APPEND
-        );
-        
         if ($authHeader) {
             $matches = [];
             if (preg_match('/Bearer\s+(.*)$/i', $authHeader, $matches)) {
