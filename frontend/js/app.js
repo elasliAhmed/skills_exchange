@@ -162,6 +162,10 @@ function setupEventListeners() {
 	document.getElementById("teacher-enrollment-close")?.addEventListener("click", closeTeacherEnrollmentModal);
 	document.getElementById("teacher-modal-cancel")?.addEventListener("click", closeTeacherEnrollmentModal);
 
+	// ── Student Lesson Details Modal ──
+	document.getElementById("sl-close")?.addEventListener("click", closeStudentLessonsModal);
+	document.getElementById("sl-close-btn")?.addEventListener("click", closeStudentLessonsModal);
+
 	// Dashboard tab switching
 	document.querySelectorAll(".tab-btn").forEach((btn) => {
 		btn.addEventListener("click", function () {
@@ -244,14 +248,17 @@ async function loadTeacherEnrollments() {
                 <button class="btn btn-primary" onclick="openTeacherEnrollmentModal(${e.id}, '${(e.learner_username || '').replace(/'/g, "\\'")}', '${(e.skill_name || '').replace(/'/g, "\\'")}', ${(e.credits ?? 0)})">Open</button>
             </div>`;
         }
-    ).join('');
+).join('');
 }
 
 let _currentTeacherEnrollment = null;
+window._editCommentOpen = {};
 
-async function openTeacherEnrollmentModal(enrollment_id, student_name, course_title, credits_per_session) {
+async function openTeacherEnrollmentModal(enrollment_id, student_name_in, course_title_in, credits_per_session) {
     _currentTeacherEnrollment = enrollment_id;
-    const result = await apiInstance.getEnrollmentLessons(enrollment_id, student_name);
+    document.getElementById('mark-complete-comment').value = '';
+
+    const result = await apiInstance.getMyEnrollmentLessons(enrollment_id);
     if (!result.success) {
         alert('Failed to load lesson details: ' + (result.data.error || 'Unknown error'));
         return;
@@ -259,15 +266,15 @@ async function openTeacherEnrollmentModal(enrollment_id, student_name, course_ti
     const d = result.data;
 
     document.getElementById('modal-course-title').textContent =
-        `${d.course_title || course_title || 'Course'}${credits_per_session > 0 ? '  —  ' + credits_per_session + ' credits / lesson' : ''}`;
-    document.getElementById('modal-student-info').textContent = 'Student: ' + (d.student_name || 'Unknown');
-    document.getElementById('mark-complete-comment').value = '';
+        `${d.course_title || course_title_in || 'Course'}${credits_per_session > 0 ? '  —  ' + credits_per_session + ' credits / lesson' : ''}`;
+    document.getElementById('modal-student-info').textContent = 'Student: ' + (d.student_name || student_name_in || 'Unknown');
 
     const lessonsList = document.getElementById('teacher-lessons-list');
     const lessons     = d.lessons  || [];
-    const total       = (d.lessons_count || lessons.length || 1);
+    // lessons_count may come from the offer; fall back to number of lesson rows
+    const total       = (d.lessons_count || lessons.length || 0);
     const done        = lessons.filter(l => l.status === 'completed').length;
-    const pct         = Math.round((done / total) * 100);
+    const pct         = total > 0 ? Math.round((done / total) * 100) : 0;
 
     // Lesson count summary bar
     const summaryHtml = `
@@ -284,16 +291,32 @@ async function openTeacherEnrollmentModal(enrollment_id, student_name, course_ti
     if (lessons.length === 0) {
         lessonsList.innerHTML = summaryHtml +
             '<p class="no-offers-msg">No lessons for this enrollment. Check the offer settings.</p>';
-    } else {
+        } else {
         lessonsList.innerHTML = summaryHtml + lessons.map(
             (l) => {
-                const completed = l.status === 'completed';
-                const completedAt = l.completed_at
+                const completed     = l.status === 'completed';
+                const completedAt   = l.completed_at
                     ? '<small style="color:var(--color-text-muted);margin-left:8px;">' +
                       new Date(l.completed_at).toLocaleDateString() + '</small>'
                     : '';
-                const summary = l.lesson_summary ? `<div class="lesson-summary" style="margin-top:6px;">${l.lesson_summary}</div>` : '';
-                const comment = l.teacher_comment ? `<div class="teacher-comment" style="margin-top:6px;">${l.teacher_comment}</div>` : '';
+                const summary  = l.lesson_summary ? `<div class="lesson-summary" style="margin-top:6px;">${l.lesson_summary}</div>` : '';
+                const hasComm  = l.teacher_comment && l.teacher_comment.trim();
+                const commDisp = hasComm ? l.teacher_comment.replace(/</g,'&lt;').replace(/>/g,'&gt;') : '';
+                const commHtml = hasComm
+                    ? `<div class="teacher-comment" id="tc-disp-${l.lesson_number}" style="margin-top:6px;">"${commDisp}"</div>`
+                    : '<div class="teacher-comment" id="tc-disp-' + l.lesson_number + '" style="margin-top:6px;font-style:italic;color:#999;">No comment yet</div>';
+                const editHtml = completed
+                    ? '<button class="btn btn-secondary" style="margin-top:6px;" onclick="toggleEditComment(' + enrollment_id + ',' + l.lesson_number + ')">Edit Comment</button>'
+                    : '';
+                const commentEditId = 'tc-edit-' + l.lesson_number;
+                const editAreaHtml  = completed && !!(window._editCommentOpen && window._editCommentOpen[enrollment_id] === l.lesson_number)
+                    ? '<div style="margin-top:6px;">' +
+                          '<textarea id="' + commentEditId + '" rows="2" style="width:100%;padding:6px;border:1px solid #ccc;border-radius:6px;">' + commDisp + '</textarea>' +
+                          '<button class="btn btn-primary" style="margin-top:4px;" onclick="saveComment(' + enrollment_id + ',' + l.lesson_number + ')">Save Comment</button>' +
+                          '<button class="btn btn-secondary" style="margin-top:4px;" onclick="toggleEditComment(' + enrollment_id + ',' + l.lesson_number + ')">Cancel</button>' +
+                      '</div>'
+                    : '';
+
                 const btnDisabled  = completed ? 'disabled' : '';
                 const btnLabel     = completed ? '✓ Done' : 'Mark as Completed';
                 const btnClass     = completed ? 'btn btn-secondary' : 'btn btn-primary';
@@ -307,18 +330,86 @@ async function openTeacherEnrollmentModal(enrollment_id, student_name, course_ti
                             ${completedAt}
                         </div>
                         ${summary}
-                        ${comment}
+                        ${commHtml}
+                        ${editAreaHtml}
                     </div>
-                    <button class="${btnClass}" ${btnDisabled}
-                        onclick="markLessonComplete(${enrollment_id}, ${l.lesson_number})">
-                        ${btnLabel}
-                    </button>
+                    <div>
+                        ${editHtml}
+                        <button class="${btnClass}" ${btnDisabled}
+                            onclick="markLessonComplete(${enrollment_id}, ${l.lesson_number})">
+                            ${btnLabel}
+                        </button>
+                    </div>
                 </div>`;
             }
         ).join('');
     }
 
+    // ── Final Course Comment section ─────────────────────────
+    const allDone    = (d.enrollment_status === 'completed')
+                    || (lessons.length > 0 && lessons.every(l => l.status === 'completed'));
+    const finalArea  = document.getElementById('teacher-final-comment-area');
+    const finalText  = document.getElementById('teacher-final-comment');
+    if (finalArea && finalText) {
+        if (allDone) {
+            finalText.value = d.final_teacher_comment || '';
+            finalArea.style.display = 'block';
+        } else {
+            finalArea.style.display = 'none';
+            finalText.value = '';
+        }
+    }
+    // handle final comment save button
+    document.getElementById('save-final-comment-btn').onclick = async () => {
+        const comment = finalText.value.trim();
+        if (!comment) { alert('Final comment cannot be empty'); return; }
+        const res = await apiInstance.saveFinalComment({
+            enrollment_id:       enrollment_id,
+            final_teacher_comment: comment,
+        });
+        if (res.success) {
+            alert(res.data.message || 'Final course comment saved');
+            openTeacherEnrollmentModal(enrollment_id);
+            loadTeacherStats();
+            loadDashboard();
+        } else {
+            alert(res.data.error || 'Failed to save final comment');
+        }
+    };
     document.getElementById('teacher-enrollment-modal').style.display = 'flex';
+}
+
+function toggleEditComment(enrollment_id, lesson_number) {
+    const key = enrollment_id;
+    if (window._editCommentOpen[key] === lesson_number) {
+        delete window._editCommentOpen[key];
+    } else {
+        window._editCommentOpen[key] = lesson_number;
+    }
+    if (_currentTeacherEnrollment === enrollment_id) {
+        openTeacherEnrollmentModal(_currentTeacherEnrollment);
+    }
+}
+
+async function saveComment(enrollment_id, lesson_number) {
+    const textarea = document.getElementById('tc-edit-' + lesson_number);
+    if (!textarea) return;
+    const comment = textarea.value.trim();
+    if (!comment) {
+        alert('Comment cannot be empty');
+        return;
+    }
+    const result = await apiInstance.saveLessonComment({
+        enrollment_id: enrollment_id,
+        lesson_number: lesson_number,
+        teacher_comment: comment,
+    });
+    if (result.success) {
+        if (window._editCommentOpen) delete window._editCommentOpen[enrollment_id];
+        openTeacherEnrollmentModal(enrollment_id);
+    } else {
+        alert(result.data.error || 'Failed to save comment');
+    }
 }
 
 function closeTeacherEnrollmentModal() {
@@ -352,6 +443,159 @@ async function markLessonComplete(enrollment_id, lesson_number) {
     }
 }
 
+// ═══ Student Dashboard ═══
+
+async function loadStudentStats() {
+    const result = await apiInstance.getStudentStats();
+    if (result.success) {
+        const d = result.data;
+        document.getElementById('stat-enrollments').textContent = d.total_enrollments || 0;
+        document.getElementById('stat-active-enrollments').textContent = d.active_enrollments || 0;
+        document.getElementById('stat-lessons-completed').textContent = d.total_completed_lessons || 0;
+    }
+}
+
+async function loadStudentEnrollments() {
+    const result = await apiInstance.getStudentEnrollments();
+    if (!result.success) {
+        document.getElementById('student-enrollments-list').innerHTML =
+            '<p class="no-offers-msg">No enrollments yet. Browse offers to enroll!</p>';
+        return;
+    }
+    const list = result.data.enrollments || [];
+    const container = document.getElementById('student-enrollments-list');
+    if (list.length === 0) {
+        container.innerHTML = '<p class="no-offers-msg">No enrollments yet. Browse offers to get started!</p>';
+        return;
+    }
+    container.innerHTML = list.map(e => {
+        const lessonsCount = e.lessons_count || 0;
+        const completedLessons = e.completed_lessons || 0;
+        const pct = lessonsCount > 0 ? Math.round((completedLessons / lessonsCount) * 100) : 0;
+        const statusClass = e.status === 'completed' ? 'completed' : e.status === 'active' ? 'active' : 'pending';
+        const teacherName = e.teacher_full_name || e.teacher_name || 'Unknown';
+        return `
+        <div class="skill-card offer-card">
+            <h4>${e.skill_name || 'Untitled'}</h4>
+            <p class="offer-teacher">Teacher: ${teacherName}</p>
+            <span class="status-badge status-${statusClass}">${e.status || 'unknown'}</span>
+            <div style="margin-top:8px;">
+                <div class="progress-label">
+                    <span>Progress</span>
+                    <span class="progress-text">${completedLessons}/${lessonsCount} lessons</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width:${pct}%"></div>
+                </div>
+            </div>
+            <button class="btn btn-primary" style="width:100%;margin-top:8px;" onclick="openStudentLessonsModal(${e.id}, '${(e.skill_name || '').replace(/'/g, "\\'")}', '${(teacherName).replace(/'/g, "\\'")}', ${(e.credits ?? 0)})">View Lessons</button>
+        </div>`;
+    }).join('');
+}
+
+// ── Student Lesson Details ──────────────────────────────────────
+let _currentStudentEnrollment = null;
+
+async function viewLessonDetails(enrollment_id) {
+    openStudentLessonsModal(enrollment_id);
+}
+
+function openStudentLessonsModal(enrollment_id, course_title, teacher_name, credits_per_session) {
+    _currentStudentEnrollment = enrollment_id;
+    
+    apiInstance.getMyEnrollmentLessons(enrollment_id).then(result => {
+        if (!result.success) {
+            alert('Failed to load lesson details: ' + (result.data.error || 'Unknown error'));
+            return;
+        }
+        const d = result.data;
+        
+        document.getElementById('sl-course-title').textContent =
+            `${d.course_title || course_title || 'Course'}${credits_per_session > 0 ? '  —  ' + credits_per_session + ' credits / lesson' : ''}`;
+        document.getElementById('sl-teacher-info').textContent = 'Teacher: ' + (d.teacher_full_name || teacher_name || 'Unknown');
+        
+        const lessonsList = document.getElementById('student-lessons-list');
+        const lessons = d.lessons || [];
+        const total = d.lessons_count || lessons.length || 0;
+        const done = lessons.filter(l => l.status === 'completed').length;
+        const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+        
+        const summaryHtml = `
+            <div style="margin-bottom:var(--spacing-md);">
+                <div class="progress-label">
+                    <span>Lesson Progress</span>
+                    <span class="progress-text">${done}/${total} completed</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width:${pct}%"></div>
+                </div>
+            </div>`;
+        
+        if (lessons.length === 0) {
+            lessonsList.innerHTML = summaryHtml + '<p class="no-offers-msg">No lessons for this enrollment.</p>';
+        } else {
+            lessonsList.innerHTML = summaryHtml + lessons.map(
+                (l) => {
+                    const completed = l.status === 'completed';
+                    const completedAt = l.completed_at
+                        ? '<small style="color:var(--color-text-muted);margin-left:8px;">' +
+                          new Date(l.completed_at).toLocaleDateString() + '</small>'
+                        : '';
+                    const summary = l.lesson_summary ? `<div class="lesson-summary" style="margin-top:6px;">${l.lesson_summary}</div>` : '';
+                    const hasComm = l.teacher_comment && l.teacher_comment.trim();
+                    const commDisp = hasComm ? l.teacher_comment.replace(/</g,'&lt;').replace(/>/g,'&gt;') : '';
+                    const commHtml = hasComm
+                        ? `<div class="teacher-comment" style="margin-top:6px;">"${commDisp}"</div>`
+                        : '<div class="teacher-comment" style="margin-top:6px;font-style:italic;color:#999;">No comment yet</div>';
+                    
+                    return `
+                    <div class="lesson-item ${completed ? 'completed' : ''}" data-lesson="${l.lesson_number}">
+                        <div style="min-width:0;">
+                            <div>
+                                <span class="lesson-number">Lesson ${l.lesson_number}</span>
+                                <span class="lesson-status ${completed ? 'completed' : 'pending'}">${l.status || 'pending'}</span>
+                                ${completedAt}
+                            </div>
+                            ${summary}
+                            ${commHtml}
+                        </div>
+                        <div>
+                            <button class="${completed ? 'btn btn-secondary' : 'btn btn-primary'}" disabled>
+                                ${completed ? '✓ Done' : 'Pending'}
+                            </button>
+                        </div>
+                    </div>`;
+                }
+            ).join('');
+        }
+        
+        // Show final comment if enrollment is completed
+        const finalCommentArea = document.getElementById('student-final-comment');
+        const finalCommentText = document.getElementById('student-final-comment-text');
+        const finalCommentDate = document.getElementById('student-final-comment-date');
+        
+        if (finalCommentArea && finalCommentText && finalCommentDate) {
+            if (d.enrollment_status === 'completed' && d.final_teacher_comment) {
+                finalCommentText.textContent = d.final_teacher_comment;
+                finalCommentDate.textContent = d.final_comment_created_at 
+                    ? `Added on ${new Date(d.final_comment_created_at).toLocaleDateString()}` 
+                    : '';
+                finalCommentArea.style.display = 'block';
+            } else {
+                finalCommentArea.style.display = 'none';
+            }
+        }
+        
+        document.getElementById('student-lessons-modal').style.display = 'flex';
+    });
+}
+
+function closeStudentLessonsModal() {
+    document.getElementById('student-lessons-modal').style.display = 'none';
+    _currentStudentEnrollment = null;
+}
+
+
 async function loadDashboard() {
 	const user = getUser();
 	if (!user) return;
@@ -360,9 +604,26 @@ async function loadDashboard() {
 		amountEl.textContent = user.credits || 0;
 		console.debug('[loadDashboard] Set credits to:', user.credits || 0);
 	}
-	loadEnrollmentsTab("all");
-	loadTeacherStats();
-	loadTeacherEnrollments();
+	
+	// Check if this user has teaching offers (is a teacher)
+	const result = await apiInstance.getMyTeachingOffers();
+	const isTeacher = result.success && result.data && result.data.offers && result.data.offers.length > 0;
+	
+	console.debug('[loadDashboard] isTeacher:', isTeacher, result);
+	
+	// Show both dashboards - teacher dashboard only if user is a teacher
+	const teacherDashboard = document.getElementById('teacher-dashboard');
+	const studentDashboard = document.getElementById('student-dashboard');
+	
+	if (teacherDashboard) teacherDashboard.style.display = isTeacher ? 'block' : 'none';
+	if (studentDashboard) studentDashboard.style.display = 'block';
+	
+	if (isTeacher) {
+		loadTeacherStats();
+		loadTeacherEnrollments();
+	}
+	loadStudentStats();
+	loadStudentEnrollments();
 }
 
 async function loadEnrollmentsTab(filter) {
@@ -410,9 +671,12 @@ function renderEnrollments(enrollments, filter) {
             </div>
             ${e.scheduled_at ? `<p class="offer-credits">Scheduled: ${new Date(e.scheduled_at).toLocaleString()}</p>` : ''}
             ${e.status === 'confirmed' && e.scheduled_at ? `<button class="btn btn-primary" style="width:100%;margin-top:8px;">Join Session</button>` : ''}
-            ${e.status === 'pending' ? `<button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="cancelEnrollment(${e.enrollment_id})">Cancel Enrollment</button>` : ''}
-            ${e.remaining_lessons > 0 && e.status === 'confirmed' ? `<button class="btn btn-info" style="width:100%;margin-top:8px;" onclick="viewLessonDetails(${e.enrollment_id})">View Lessons</button>` : ''}
-        </div>
+            ${e.status !== 'cancelled' && e.status !== 'completed'
+                ? `<button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="cancelEnrollment(${e.id})">Cancel Enrollment</button>`
+                : ''}
+            ${e.remaining_lessons > 0
+                ? `<button class="btn btn-info" style="width:100%;margin-top:8px;" onclick="viewLessonDetails(${e.id})">View Lessons</button>`
+                : ''}        </div>
     `,
 		)
 		.join("");

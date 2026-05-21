@@ -372,6 +372,18 @@
 						</div>
 						<div id="modal-student-info" style="margin-bottom:var(--spacing-md);color:var(--color-text-secondary);"></div>
 						<div id="teacher-lessons-list"></div>
+						<!-- Final course comment — appears when all lessons are completed -->
+						<div id="teacher-final-comment-area" style="display:none;margin-top:var(--spacing-md);padding-top:var(--spacing-md);border-top:1px solid var(--color-border);">
+							<h4 style="margin-bottom:8px;">🏁 Final Course Comment</h4>
+							<p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:8px;">
+								Overall report for this student. This will be visible to the student.
+							</p>
+							<div class="form-group">
+								<label for="teacher-final-comment">Final Comment / Report</label>
+								<textarea id="teacher-final-comment" rows="3" placeholder="e.g. Student mastered the fundamentals and is ready for intermediate level."></textarea>
+							</div>
+							<button type="button" class="btn btn-primary" id="save-final-comment-btn" style="margin-top:8px;">Save Final Comment</button>
+						</div>
 						<div id="teacher-comment-area" style="display:none;margin-top:var(--spacing-md);padding-top:var(--spacing-md);border-top:1px solid var(--color-border);">
 							<div class="form-group">
 								<label for="mark-complete-comment">Comment (shown to student)</label>
@@ -474,11 +486,32 @@
 						<div class="section-header">
 							<h2>Browse Offers</h2>
 						</div>
-						<div id="teaching-offers-list" class="skills-grid">
-							<p class="no-offers-msg">Loading offers...</p>
-						</div>
+					<div id="teaching-offers-list" class="skills-grid">
+						<p class="no-offers-msg">Loading offers...</p>
 					</div>
-				</section>
+				</div>
+			</section>
+
+			<!-- Student: My Lesson Details Modal -->
+			<div id="student-lessons-modal" class="modal-overlay" style="display:none;">
+				<div class="modal-content lesson-details-modal">
+					<div class="modal-header">
+						<h3 id="sl-course-title">Course</h3>
+						<button type="button" class="modal-close" id="sl-close" onclick="closeStudentLessonsModal()">&times;</button>
+					</div>
+					<p id="sl-teacher-info" style="margin-bottom:12px;color:var(--color-text-secondary);"></p>
+					<div id="student-lessons-list"></div>
+					<!-- Final course comment from teacher to student -->
+					<div id="student-final-comment" class="student-final-comment" style="display:none;margin-top:var(--spacing-md);padding-top:var(--spacing-md);border-top:1px solid var(--color-border);">
+						<h4 style="margin-bottom:6px;">🏁 Final Course Comment</h4>
+						<div id="student-final-comment-text" class="teacher-comment"></div>
+						<span id="student-final-comment-date" style="font-size:12px;color:var(--color-text-muted);"></span>
+					</div>
+					<div id="sl-actions" class="modal-actions">
+						<button type="button" class="btn btn-secondary" id="sl-close-btn" onclick="closeStudentLessonsModal()">Close</button>
+					</div>
+				</div>
+			</div>
 
 				<section id="page-add-offer" class="page">
 					<div class="auth-form-container">
@@ -583,58 +616,77 @@
 
 				<section id="page-dashboard" class="page">
 					<div class="container">
-						<h2 class="section-heading">My Enrollments</h2>
-
-						<!-- Filter tabs -->
-						<div class="dashboard-tabs">
-							<button class="tab-btn active" data-tab="all">
-								All
-							</button>
-							<button class="tab-btn" data-tab="pending">
-								Pending
-							</button>
-							<button class="tab-btn" data-tab="confirmed">
-								Confirmed
-							</button>
-							<button class="tab-btn" data-tab="completed">
-								Completed
-							</button>
-						</div>
+						<h2 class="section-heading">Dashboard</h2>
 
 						<!-- ═══ Teacher Dashboard ═══ -->
+						<div id="teacher-dashboard" style="display:none;">
+							<h3 style="margin-top: var(--spacing-xxl);">Teaching Overview</h3>
+							<!-- Stat Cards -->
+							<div id="teacher-stats" class="teacher-stats-grid">
+								<div class="teacher-stat-card">
+									<div class="teacher-stat-icon">📚</div>
+									<div class="teacher-stat-info">
+										<span class="teacher-stat-value" id="stat-students">0</span>
+										<span class="teacher-stat-label">Total Students</span>
+									</div>
+								</div>
+								<div class="teacher-stat-card">
+									<div class="teacher-stat-icon">🟢</div>
+									<div class="teacher-stat-info">
+										<span class="teacher-stat-value" id="stat-active">0</span>
+										<span class="teacher-stat-label">Active Enrollments</span>
+									</div>
+								</div>
+								<div class="teacher-stat-card">
+									<div class="teacher-stat-icon">✅</div>
+									<div class="teacher-stat-info">
+										<span class="teacher-stat-value" id="stat-completed">0</span>
+										<span class="teacher-stat-label">Completed Lessons</span>
+									</div>
+								</div>
+							</div>
 
-						<!-- Stat Cards -->
-						<div id="teacher-stats" class="teacher-stats-grid">
-							<div class="teacher-stat-card">
-								<div class="teacher-stat-icon">📚</div>
-								<div class="teacher-stat-info">
-									<span class="teacher-stat-value" id="stat-students">0</span>
-									<span class="teacher-stat-label">Total Students</span>
-								</div>
-							</div>
-							<div class="teacher-stat-card">
-								<div class="teacher-stat-icon">🟢</div>
-								<div class="teacher-stat-info">
-									<span class="teacher-stat-value" id="stat-active">0</span>
-									<span class="teacher-stat-label">Active Enrollments</span>
-								</div>
-							</div>
-							<div class="teacher-stat-card">
-								<div class="teacher-stat-icon">✅</div>
-								<div class="teacher-stat-info">
-									<span class="teacher-stat-value" id="stat-completed">0</span>
-									<span class="teacher-stat-label">Completed Lessons</span>
-								</div>
+							<!-- Enrollments List -->
+							<h3 style="margin-top: var(--spacing-xxl);">My Students</h3>
+							<div id="teacher-enrollments-list" class="skills-grid">
+								<p class="no-offers-msg">Loading your students...</p>
 							</div>
 						</div>
 
-						<!-- Enrollments List -->
-						<h3 style="margin-top: var(--spacing-xxl);">My Students</h3>
-						<div id="teacher-enrollments-list" class="skills-grid">
-							<p class="no-offers-msg">Loading your students...</p>
-						</div>
+						<!-- ═══ Student Dashboard ═══ -->
+						<div id="student-dashboard">
+							<h3 style="margin-top: var(--spacing-xxl);">Learning Overview</h3>
+							<!-- Stat Cards -->
+							<div id="student-stats" class="teacher-stats-grid">
+								<div class="teacher-stat-card">
+									<div class="teacher-stat-icon">📚</div>
+									<div class="teacher-stat-info">
+										<span class="teacher-stat-value" id="stat-enrollments">0</span>
+										<span class="teacher-stat-label">Total Enrollments</span>
+									</div>
+								</div>
+								<div class="teacher-stat-card">
+									<div class="teacher-stat-icon">🟢</div>
+									<div class="teacher-stat-info">
+										<span class="teacher-stat-value" id="stat-active-enrollments">0</span>
+										<span class="teacher-stat-label">Active Enrollments</span>
+									</div>
+								</div>
+								<div class="teacher-stat-card">
+									<div class="teacher-stat-icon">✅</div>
+									<div class="teacher-stat-info">
+										<span class="teacher-stat-value" id="stat-lessons-completed">0</span>
+										<span class="teacher-stat-label">Lessons Completed</span>
+									</div>
+								</div>
+							</div>
 
-						<!-- ═══ End Teacher Dashboard ═══ -->
+							<!-- Enrollments List -->
+							<h3 style="margin-top: var(--spacing-xxl);">My Enrollments</h3>
+							<div id="student-enrollments-list" class="skills-grid">
+								<p class="no-offers-msg">Loading your enrollments...</p>
+							</div>
+						</div>
 					</div>
 				</section>
 
@@ -683,8 +735,8 @@
 			</main>
 		</div>
 
-		<script src="js/api.js"></script>
-		<script src="js/app.js"></script>
+		<script src="js/api.js?v=2"></script>
+		<script src="js/app.js?v=2"></script>
 		<script src="js/video.js"></script>
 	</body>
 </html>

@@ -96,7 +96,35 @@ class API {
     }
 
     markLessonComplete(data) {
-        return this.request('teacher.php', 'POST', { action: 'complete_lesson', ...data });
+        return this.request('enrollments.php', 'POST', { action: 'complete_lesson', ...data });
+    }
+
+    saveLessonComment(data) {
+        return this.request('teacher.php', 'POST', { action: 'save_comment', ...data });
+    }
+
+    // ── Student Dashboard ──
+    getStudentStats() {
+        return this.request('student.php?endpoint=stats', 'GET');
+    }
+
+    getStudentEnrollments() {
+        return this.request('student.php?endpoint=enrollments', 'GET');
+    }
+
+    // Student: get lessons for an enrollment they own
+    getMyEnrollmentLessons(enrollment_id) {
+        return this.request(`lessons.php/enrollment/${enrollment_id}`, 'GET');
+    }
+
+    // Get final teacher comment for a completed enrollment
+    getFinalComment(enrollment_id) {
+        return this.request(`lessons.php/enrollment/${enrollment_id}/final-comment`, 'GET');
+    }
+
+    // Save final teacher comment (teacher only)
+    saveFinalComment(data) {
+        return this.request('teacher.php', 'POST', { action: 'save_final_comment', ...data });
     }
 
     // Lesson request methods

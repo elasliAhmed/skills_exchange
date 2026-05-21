@@ -12,6 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../controllers/AuthController.php';
 require_once __DIR__ . '/../controllers/UserController.php';
+require_once __DIR__ . '/../controllers/LessonController.php';
 require_once __DIR__ . '/../controllers/ChatController.php';
 require_once __DIR__ . '/../controllers/ReviewController.php';
 
@@ -78,6 +79,11 @@ switch ($resource) {
     // Enrollments
     case 'enrollments':
         require __DIR__ . '/../api/enrollments.php';
+        break;
+
+    // Lessons
+    case 'lessons':
+        require __DIR__ . '/../api/lessons.php';
         break;
 
     // Chat

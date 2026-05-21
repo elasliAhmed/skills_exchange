@@ -123,6 +123,18 @@ if ($method === 'GET') {
         $updateEnrollmentStmt = $conn->prepare($updateEnrollmentQuery);
         $updateEnrollmentStmt->execute([$enrollment_id]);
 
+        // 2a. Auto-complete enrollment when all lessons are done
+        $postEnrollment = $conn->prepare(
+            "SELECT completed_lessons, remaining_lessons, status FROM enrollments WHERE id = ?"
+        );
+        $postEnrollment->execute([$enrollment_id]);
+        $peData = $postEnrollment->fetch(PDO::FETCH_ASSOC);
+        if ((int)($peData['remaining_lessons'] ?? 1) === 0
+            && ($peData['status'] ?? 'active') !== 'completed') {
+            $conn->prepare("UPDATE enrollments SET status = 'completed', updated_at = NOW() WHERE id = ?")
+                ->execute([$enrollment_id]);
+        }
+
         // 3. Per-lesson payment: transfer credits from learner to teacher
         $creditsPerSession = (int)($enrollmentData['credits_per_session'] ?? 0);
         if ($creditsPerSession > 0) {
@@ -198,28 +210,60 @@ if ($method === 'GET') {
     $enrollment->updateStatus($input['enrollment_id'], $input['status']);
     echo json_encode(['success' => true, 'data' => ['message' => 'Enrollment updated']]);
 } elseif ($method === 'PATCH' && !empty($input['action']) && $input['action'] === 'update_lesson_report' && !empty($input['enrollment_id']) && !empty($input['lesson_number'])) {
-    // Update lesson summary and/or teacher comment
-    $lessonNumber = (int)$input['lesson_number'];
-    $lessonSummary = $input['lesson_summary'] ?? null;
-    $teacherComment = $input['teacher_comment'] ?? null;
-    
+    // Update lesson summary and/or teacher comment — teacher only
+    $lessonNumber   = (int)$input['lesson_number'];
+    $lessonSummary  = trim($input['lesson_summary'] ?? '');
+    $teacherComment = trim($input['teacher_comment'] ?? '');
+
+    if ($lessonSummary === '' && $teacherComment === '') {
+        echo json_encode(['success' => false, 'data' => ['error' => 'Provide at least lesson_summary or teacher_comment']]);
+        exit;
+    }
+
     $conn = $database->connect();
-    
-    // Get the lesson
+
+    // Verify this teacher owns the enrollment that owns the lesson
+    $ownStmt = $conn->prepare(
+        "SELECT l.id
+           FROM lessons l
+           JOIN enrollments e ON l.enrollment_id = e.id
+           JOIN user_skills us ON e.offer_id = us.id
+          WHERE e.id = ? AND l.lesson_number = ? AND us.user_id = ?"
+    );
+    $ownStmt->execute([$input['enrollment_id'], $lessonNumber, $user_id]);
+    if (!$ownStmt->fetch()) {
+        echo json_encode(['success' => false, 'data' => ['error' => 'Lesson not found or access denied']]);
+        exit;
+    }
+
     $lessonQuery = "SELECT * FROM lessons WHERE enrollment_id = ? AND lesson_number = ?";
     $lessonStmt = $conn->prepare($lessonQuery);
     $lessonStmt->execute([$input['enrollment_id'], $lessonNumber]);
     $lesson = $lessonStmt->fetch();
-    
+
     if (!$lesson) {
         echo json_encode(['success' => false, 'data' => ['error' => 'Lesson not found']]);
         exit;
     }
-    
-    // Update the lesson report
-    $updateLessonQuery = "UPDATE lessons SET lesson_summary = ?, teacher_comment = ? WHERE enrollment_id = ? AND lesson_number = ?";
+
+    $fields   = [];
+    $params   = [];
+
+    if ($lessonSummary !== '') {
+        $fields[] = 'lesson_summary = ?';
+        $params[] = $lessonSummary;
+    }
+    if ($teacherComment !== '') {
+        $fields[] = 'teacher_comment = ?';
+        $params[] = $teacherComment;
+    }
+    $params[] = (int)$input['enrollment_id'];
+    $params[] = $lessonNumber;
+
+    $updateLessonQuery = "UPDATE lessons SET " . implode(', ', $fields) . " WHERE enrollment_id = ? AND lesson_number = ?";
     $updateLessonStmt = $conn->prepare($updateLessonQuery);
-    $updateLessonStmt->execute([$lessonSummary, $teacherComment, $input['enrollment_id'], $lessonNumber]);
-    
+    $updateLessonStmt->execute($params);
+
     echo json_encode(['success' => true, 'data' => ['message' => 'Lesson report updated']]);
+    exit;
 }
