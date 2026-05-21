@@ -611,20 +611,19 @@ async function loadDashboard() {
 	
 	console.debug('[loadDashboard] isTeacher:', isTeacher, result);
 	
-	// Show appropriate dashboard
+	// Show both dashboards - teacher dashboard only if user is a teacher
 	const teacherDashboard = document.getElementById('teacher-dashboard');
 	const studentDashboard = document.getElementById('student-dashboard');
 	
 	if (teacherDashboard) teacherDashboard.style.display = isTeacher ? 'block' : 'none';
-	if (studentDashboard) studentDashboard.style.display = isTeacher ? 'none' : 'block';
+	if (studentDashboard) studentDashboard.style.display = 'block';
 	
 	if (isTeacher) {
 		loadTeacherStats();
 		loadTeacherEnrollments();
-	} else {
-		loadStudentStats();
-		loadStudentEnrollments();
 	}
+	loadStudentStats();
+	loadStudentEnrollments();
 }
 
 async function loadEnrollmentsTab(filter) {
