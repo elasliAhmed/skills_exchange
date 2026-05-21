@@ -136,6 +136,91 @@ class Enrollment {
         return $stmt->fetchAll();
     }
 
+    /** True if both users are linked via an enrollment (teacher ↔ learner). */
+    public function usersShareEnrollment($user_a, $user_b) {
+        if ($user_a == $user_b) {
+            return false;
+        }
+        $conn = $this->db->connect();
+        $query = "SELECT 1 FROM {$this->table} e
+                  JOIN user_skills us ON e.offer_id = us.id
+                  WHERE (e.learner_id = ? AND us.user_id = ?)
+                     OR (e.learner_id = ? AND us.user_id = ?)
+                  LIMIT 1";
+        $stmt = $conn->prepare($query);
+        $stmt->execute([$user_a, $user_b, $user_b, $user_a]);
+        return (bool)$stmt->fetchColumn();
+    }
+
+    /** User is the learner or teacher on this enrollment. */
+    public function userCanAccessEnrollment($user_id, $enrollment_id) {
+        $conn = $this->db->connect();
+        $query = "SELECT 1 FROM {$this->table} e
+                  JOIN user_skills us ON e.offer_id = us.id
+                  WHERE e.id = ? AND (e.learner_id = ? OR us.user_id = ?)
+                  LIMIT 1";
+        $stmt = $conn->prepare($query);
+        $stmt->execute([(int)$enrollment_id, (int)$user_id, (int)$user_id]);
+        return (bool)$stmt->fetchColumn();
+    }
+
+    /** Returns teacher_id, learner_id, and the other party for the current user. */
+    public function getEnrollmentParties($enrollment_id, $user_id) {
+        $conn = $this->db->connect();
+        $query = "SELECT e.id, e.learner_id, us.user_id AS teacher_id, us.skill_name AS course_title
+                  FROM {$this->table} e
+                  JOIN user_skills us ON e.offer_id = us.id
+                  WHERE e.id = ? AND (e.learner_id = ? OR us.user_id = ?)
+                  LIMIT 1";
+        $stmt = $conn->prepare($query);
+        $stmt->execute([(int)$enrollment_id, (int)$user_id, (int)$user_id]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$row) {
+            return null;
+        }
+        $uid = (int)$user_id;
+        $learner = (int)$row['learner_id'];
+        $teacher = (int)$row['teacher_id'];
+        $other = ($uid === $learner) ? $teacher : $learner;
+        return [
+            'enrollment_id' => (int)$row['id'],
+            'teacher_id' => $teacher,
+            'learner_id' => $learner,
+            'other_user_id' => $other,
+            'course_title' => $row['course_title'],
+        ];
+    }
+
+    /** Latest shared enrollment between two users (for storing new messages). */
+    public function getSharedEnrollmentId($user_a, $user_b) {
+        if ($user_a == $user_b) {
+            return null;
+        }
+        $conn = $this->db->connect();
+        $query = "SELECT e.id FROM {$this->table} e
+                  JOIN user_skills us ON e.offer_id = us.id
+                  WHERE (e.learner_id = ? AND us.user_id = ?)
+                     OR (e.learner_id = ? AND us.user_id = ?)
+                  ORDER BY e.updated_at DESC, e.id DESC
+                  LIMIT 1";
+        $stmt = $conn->prepare($query);
+        $stmt->execute([(int)$user_a, (int)$user_b, (int)$user_b, (int)$user_a]);
+        $id = $stmt->fetchColumn();
+        return $id ? (int)$id : null;
+    }
+
+    /** Receiver must be the other party on this enrollment. */
+    public function receiverBelongsToEnrollment($enrollment_id, $receiver_id) {
+        $conn = $this->db->connect();
+        $query = "SELECT 1 FROM {$this->table} e
+                  JOIN user_skills us ON e.offer_id = us.id
+                  WHERE e.id = ? AND (e.learner_id = ? OR us.user_id = ?)
+                  LIMIT 1";
+        $stmt = $conn->prepare($query);
+        $stmt->execute([(int)$enrollment_id, (int)$receiver_id, (int)$receiver_id]);
+        return (bool)$stmt->fetchColumn();
+    }
+
     public function getLearnersByOfferId($offer_id) {
         $conn = $this->db->connect();
         $query = "SELECT e.*, u.username, u.email, u.full_name
