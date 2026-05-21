@@ -1,13 +1,20 @@
 <?php
 // Chat Controller
 require_once __DIR__ . '/../models/Message.php';
+require_once __DIR__ . '/../models/Enrollment.php';
 require_once __DIR__ . '/../config/jwt.php';
 
 class ChatController {
     private $message;
+    private $enrollment;
 
     public function __construct($database) {
         $this->message = new Message($database);
+        $this->enrollment = new Enrollment($database);
+    }
+
+    private function canMessageUsers($user_id, $other_id) {
+        return $this->enrollment->usersShareEnrollment($user_id, (int)$other_id);
     }
 
     public function sendMessage($data) {
@@ -25,10 +32,20 @@ class ChatController {
             }
         }
 
+        $receiver_id = (int)$data['receiver_id'];
+        if ($receiver_id === (int)$sender_id) {
+            $this->sendResponse(false, ['Cannot message yourself'], 400);
+            return;
+        }
+        if (!$this->canMessageUsers($sender_id, $receiver_id)) {
+            $this->sendResponse(false, ['You can only message users you share an enrollment with'], 403);
+            return;
+        }
+
         $this->message->send(
-            $sender_id, 
-            $data['receiver_id'], 
-            $data['message'], 
+            $sender_id,
+            $receiver_id,
+            trim($data['message']),
             $data['lesson_request_id'] ?? null
         );
 
@@ -39,6 +56,11 @@ class ChatController {
         $current_user_id = JWT::getUserId();
         if (!$current_user_id) {
             $this->sendResponse(false, ['Authentication required'], 401);
+            return;
+        }
+
+        if (!$lesson_request_id && !$this->canMessageUsers($current_user_id, $user_id)) {
+            $this->sendResponse(false, ['You can only message users you share an enrollment with'], 403);
             return;
         }
 

@@ -16,6 +16,8 @@
 			rel="stylesheet"
 			href="/skills_exchange/frontend/css/ui-additions.css"
 		/>
+		<link rel="stylesheet" href="css/messages.css" />
+		<link rel="stylesheet" href="css/dashboard.css" />
 	</head>
 	<body>
 		<div id="app">
@@ -39,6 +41,14 @@
 						<a href="#" data-page="dashboard" class="user-only"
 							>Dashboard</a
 						>
+						<a href="#" data-page="messages" class="user-only nav-messages"
+							>Messages
+							<span
+								id="messages-unread-badge"
+								class="nav-unread-badge"
+								style="display: none"
+							></span
+						></a>
 						<a href="#" data-page="profile" class="user-only"
 							>Profile</a
 						>
@@ -614,77 +624,303 @@
 					</div>
 				</section>
 
-				<section id="page-dashboard" class="page">
-					<div class="container">
-						<h2 class="section-heading">Dashboard</h2>
+				<section id="page-dashboard" class="page dash-page">
+					<div class="dash-app" id="dash-app">
+						<div class="dash-sidebar-overlay" id="dash-sidebar-overlay"></div>
 
-						<!-- ═══ Teacher Dashboard ═══ -->
-						<div id="teacher-dashboard" style="display:none;">
-							<h3 style="margin-top: var(--spacing-xxl);">Teaching Overview</h3>
-							<!-- Stat Cards -->
-							<div id="teacher-stats" class="teacher-stats-grid">
-								<div class="teacher-stat-card">
-									<div class="teacher-stat-icon">📚</div>
-									<div class="teacher-stat-info">
-										<span class="teacher-stat-value" id="stat-students">0</span>
-										<span class="teacher-stat-label">Total Students</span>
-									</div>
-								</div>
-								<div class="teacher-stat-card">
-									<div class="teacher-stat-icon">🟢</div>
-									<div class="teacher-stat-info">
-										<span class="teacher-stat-value" id="stat-active">0</span>
-										<span class="teacher-stat-label">Active Enrollments</span>
-									</div>
-								</div>
-								<div class="teacher-stat-card">
-									<div class="teacher-stat-icon">✅</div>
-									<div class="teacher-stat-info">
-										<span class="teacher-stat-value" id="stat-completed">0</span>
-										<span class="teacher-stat-label">Completed Lessons</span>
-									</div>
-								</div>
+						<aside class="dash-sidebar" id="dash-sidebar">
+							<div class="dash-sidebar-brand">
+								<div class="dash-brand-icon">SE</div>
+								<span class="dash-brand-text">Skills Exchange</span>
 							</div>
+							<nav class="dash-nav" aria-label="Main">
+								<a href="#" class="dash-nav-link active" data-page="dashboard" data-dash-nav="dashboard">
+									<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+									Dashboard
+								</a>
+								<a href="#" class="dash-nav-link" data-page="offers" data-dash-nav="offers">
+									<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+									My Skills
+								</a>
+								<a href="#" class="dash-nav-link" data-dash-scroll="dash-learning">
+									<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+									Learning
+								</a>
+								<a href="#" class="dash-nav-link" data-page="messages" data-dash-nav="messages">
+									<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+									Messages
+								</a>
+								<a href="#" class="dash-nav-link" data-dash-scroll="dash-schedule">
+									<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+									Calendar
+								</a>
+								<a href="#" class="dash-nav-link" data-dash-scroll="dash-wallet">
+									<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+									Wallet
+								</a>
+								<a href="#" class="dash-nav-link" data-page="profile" data-dash-nav="profile">
+									<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+									Settings
+								</a>
+							</nav>
+							<div class="dash-sidebar-foot">
+								<div class="dash-profile-mini">
+									<div class="dash-profile-avatar" id="dash-sidebar-avatar">?</div>
+									<div class="dash-profile-info">
+										<div class="dash-profile-name" id="dash-sidebar-name">User</div>
+										<div class="dash-profile-credits"><span id="dash-sidebar-credits">0</span> credits</div>
+									</div>
+								</div>
+								<button type="button" class="dash-upgrade-btn" data-page="offers">Explore Skills</button>
+							</div>
+						</aside>
 
-							<!-- Enrollments List -->
-							<h3 style="margin-top: var(--spacing-xxl);">My Students</h3>
-							<div id="teacher-enrollments-list" class="skills-grid">
-								<p class="no-offers-msg">Loading your students...</p>
+						<div class="dash-main">
+							<header class="dash-topbar">
+								<button type="button" class="dash-menu-toggle" id="dash-menu-toggle" aria-label="Menu">
+									<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+								</button>
+								<div class="dash-search-wrap">
+									<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+									<input type="search" class="dash-search" id="dash-global-search" placeholder="Search skills, lessons, people..." />
+								</div>
+								<div class="dash-topbar-actions">
+									<button type="button" class="dash-icon-btn" aria-label="Notifications">
+										<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+										<span class="dash-badge-dot"></span>
+									</button>
+									<button type="button" class="dash-icon-btn" data-page="messages" aria-label="Messages">
+										<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+									</button>
+									<button type="button" class="dash-quick-btn" data-page="add-offer" id="add-offer-btn-dash"><span>+ New Offer</span></button>
+								</div>
+							</header>
+
+							<div class="dash-scroll">
+								<div class="dash-layout">
+									<div class="dash-center">
+										<section class="dash-hero">
+											<div class="dash-hero-grid">
+												<div>
+													<p class="dash-hero-eyebrow">Your workspace</p>
+													<h1 class="dash-hero-title" id="dash-welcome-title">Welcome back</h1>
+													<p class="dash-hero-sub" id="dash-welcome-sub">Track progress, connect with learners, and grow your skills.</p>
+													<div class="dash-hero-metrics">
+														<div class="dash-hero-metric">
+															<strong id="dash-hero-lessons">0</strong>
+															Lessons completed
+														</div>
+														<div class="dash-hero-metric">
+															<strong id="dash-hero-streak">3</strong>
+															Day streak
+														</div>
+													</div>
+												</div>
+												<div class="dash-progress-ring" id="dash-progress-ring" aria-hidden="true">
+													<svg width="120" height="120" viewBox="0 0 120 120">
+														<circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="10"/>
+														<circle id="dash-ring-progress" cx="60" cy="60" r="52" fill="none" stroke="#a5b4fc" stroke-width="10" stroke-linecap="round" stroke-dasharray="327" stroke-dashoffset="327" transform="rotate(-90 60 60)"/>
+													</svg>
+													<div class="dash-progress-ring-label">
+														<span id="dash-ring-pct">0%</span>
+														<span>Progress</span>
+													</div>
+												</div>
+											</div>
+										</section>
+
+										<div class="dash-stats">
+											<div class="dash-stat-card">
+												<div class="dash-stat-top">
+													<div class="dash-stat-icon indigo">📖</div>
+													<span class="dash-stat-trend" id="dash-trend-lessons">—</span>
+												</div>
+												<div class="dash-stat-value" id="dash-stat-active-lessons">0</div>
+												<div class="dash-stat-label">Active Lessons</div>
+											</div>
+											<div class="dash-stat-card">
+												<div class="dash-stat-top">
+													<div class="dash-stat-icon violet">🎓</div>
+													<span class="dash-stat-trend" id="dash-trend-teaching">—</span>
+												</div>
+												<div class="dash-stat-value" id="dash-stat-teaching">0</div>
+												<div class="dash-stat-label">Skills Teaching</div>
+											</div>
+											<div class="dash-stat-card">
+												<div class="dash-stat-top">
+													<div class="dash-stat-icon emerald">📚</div>
+													<span class="dash-stat-trend" id="dash-trend-learning">—</span>
+												</div>
+												<div class="dash-stat-value" id="dash-stat-learning">0</div>
+												<div class="dash-stat-label">Skills Learning</div>
+											</div>
+											<div class="dash-stat-card" id="dash-wallet">
+												<div class="dash-stat-top">
+													<div class="dash-stat-icon amber">💎</div>
+													<span class="dash-stat-trend">Balance</span>
+												</div>
+												<div class="dash-stat-value" id="dash-stat-credits">0</div>
+												<div class="dash-stat-label">Credits</div>
+											</div>
+										</div>
+
+										<div id="teacher-dashboard" style="display:none;">
+											<div class="dash-section-block">
+												<p class="dash-section-label">Teaching</p>
+												<div class="dash-panel">
+													<div class="dash-panel-head">
+														<h2 class="dash-panel-title">My Students</h2>
+													</div>
+													<div class="dash-panel-body">
+														<div id="teacher-enrollments-list" class="dash-lessons-grid">
+															<p class="dash-empty">Loading your students...</p>
+														</div>
+													</div>
+												</div>
+											</div>
+											<span id="stat-students" style="display:none">0</span>
+											<span id="stat-active" style="display:none">0</span>
+											<span id="stat-completed" style="display:none">0</span>
+										</div>
+
+										<div id="student-dashboard">
+											<div class="dash-section-block" id="dash-learning">
+												<p class="dash-section-label">Learning</p>
+												<div class="dash-panel">
+													<div class="dash-panel-head">
+														<h2 class="dash-panel-title">Continue Learning</h2>
+														<a href="#" class="dash-panel-link" data-page="offers">Browse offers →</a>
+													</div>
+													<div class="dash-panel-body">
+														<div id="student-enrollments-list" class="dash-lessons-grid">
+															<p class="dash-empty">Loading your enrollments...</p>
+														</div>
+													</div>
+												</div>
+											</div>
+											<span id="stat-enrollments" style="display:none">0</span>
+											<span id="stat-active-enrollments" style="display:none">0</span>
+											<span id="stat-lessons-completed" style="display:none">0</span>
+										</div>
+
+										<div class="dash-panel" id="dash-schedule">
+											<div class="dash-panel-head">
+												<h2 class="dash-panel-title">Upcoming Schedule</h2>
+											</div>
+											<div class="dash-panel-body" id="dash-calendar-list">
+												<p class="dash-empty">No upcoming sessions scheduled</p>
+											</div>
+										</div>
+
+										<div class="dash-panel">
+											<div class="dash-panel-head">
+												<h2 class="dash-panel-title">Recent Activity</h2>
+											</div>
+											<div class="dash-panel-body">
+												<div class="dash-timeline" id="dash-activity-feed">
+													<p class="dash-empty">Loading activity...</p>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<aside class="dash-rail">
+										<div class="dash-rail-card glow">
+											<h3 class="dash-panel-title" style="margin-bottom:0.75rem">Learning Streak</h3>
+											<div class="dash-streak">
+												<div class="dash-streak-num" id="dash-rail-streak">3</div>
+												<div class="dash-streak-label">days in a row — keep it up!</div>
+											</div>
+										</div>
+										<div class="dash-rail-card">
+											<h3 class="dash-panel-title" style="margin-bottom:1rem">Daily Goals</h3>
+											<div class="dash-goal-item">
+												<div class="dash-goal-head"><span>Complete a lesson</span><span id="dash-goal-lessons">0/1</span></div>
+												<div class="dash-progress-track"><div class="dash-progress-fill" id="dash-goal-lessons-bar" style="width:0%"></div></div>
+											</div>
+											<div class="dash-goal-item">
+												<div class="dash-goal-head"><span>Send a message</span><span id="dash-goal-msg">0/1</span></div>
+												<div class="dash-progress-track"><div class="dash-progress-fill" id="dash-goal-msg-bar" style="width:0%"></div></div>
+											</div>
+											<div class="dash-achievement">
+												<span class="dash-achievement-icon">🏆</span>
+												<span class="dash-achievement-text" id="dash-achievement-text">Complete your first course</span>
+											</div>
+										</div>
+										<div class="dash-rail-card">
+											<div class="dash-panel-head" style="padding:0;border:0;margin-bottom:0.75rem">
+												<h3 class="dash-panel-title">Messages</h3>
+												<a href="#" class="dash-panel-link" data-page="messages">View all</a>
+											</div>
+											<div id="dash-messages-preview"></div>
+										</div>
+									</aside>
+								</div>
 							</div>
 						</div>
+					</div>
+				</section>
 
-						<!-- ═══ Student Dashboard ═══ -->
-						<div id="student-dashboard">
-							<h3 style="margin-top: var(--spacing-xxl);">Learning Overview</h3>
-							<!-- Stat Cards -->
-							<div id="student-stats" class="teacher-stats-grid">
-								<div class="teacher-stat-card">
-									<div class="teacher-stat-icon">📚</div>
-									<div class="teacher-stat-info">
-										<span class="teacher-stat-value" id="stat-enrollments">0</span>
-										<span class="teacher-stat-label">Total Enrollments</span>
+				<section id="page-messages" class="page page-messages">
+					<div class="messages-page-wrap">
+						<div class="messages-app" id="messages-app">
+							<aside class="messages-sidebar" aria-label="Conversations">
+								<div class="messages-sidebar-head">
+									<h2 class="messages-sidebar-title">Messages</h2>
+									<div class="messages-search-wrap">
+										<svg class="messages-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+										<input
+											type="search"
+											id="conversation-search"
+											class="messages-search-input"
+											placeholder="Search conversations..."
+											autocomplete="off"
+										/>
 									</div>
 								</div>
-								<div class="teacher-stat-card">
-									<div class="teacher-stat-icon">🟢</div>
-									<div class="teacher-stat-info">
-										<span class="teacher-stat-value" id="stat-active-enrollments">0</span>
-										<span class="teacher-stat-label">Active Enrollments</span>
-									</div>
+								<div id="conversations-list" class="conversations-list">
+									<p class="messages-state-text">Loading...</p>
 								</div>
-								<div class="teacher-stat-card">
-									<div class="teacher-stat-icon">✅</div>
-									<div class="teacher-stat-info">
-										<span class="teacher-stat-value" id="stat-lessons-completed">0</span>
-										<span class="teacher-stat-label">Lessons Completed</span>
-									</div>
-								</div>
-							</div>
+							</aside>
 
-							<!-- Enrollments List -->
-							<h3 style="margin-top: var(--spacing-xxl);">My Enrollments</h3>
-							<div id="student-enrollments-list" class="skills-grid">
-								<p class="no-offers-msg">Loading your enrollments...</p>
+							<div id="messages-panel" class="messages-chat">
+								<div id="thread-placeholder" class="chat-empty-state">
+									<div class="chat-empty-icon" aria-hidden="true">
+										<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+									</div>
+									<h3 class="chat-empty-title">Select a conversation</h3>
+									<p class="chat-empty-desc">Choose someone from the list to start messaging</p>
+								</div>
+
+								<header id="thread-header" class="chat-header hidden">
+									<button type="button" id="chat-back-btn" class="chat-back-btn" aria-label="Back to conversations">
+										<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+									</button>
+									<div id="chat-header-avatar" class="chat-avatar chat-avatar--md"></div>
+									<div class="chat-header-info">
+										<h3 id="thread-partner-name" class="chat-header-name">User</h3>
+										<p id="thread-course-title" class="chat-header-course"></p>
+										<span class="chat-header-status">Available</span>
+									</div>
+								</header>
+
+								<div id="messages-thread" class="chat-messages hidden"></div>
+
+								<footer id="message-compose" class="chat-composer hidden" hidden>
+									<div class="chat-composer-inner">
+										<textarea
+											id="message-input"
+											class="chat-input"
+											rows="1"
+											placeholder="Type a message..."
+											maxlength="2000"
+											disabled
+										></textarea>
+										<button type="button" id="message-send-btn" class="chat-send-btn" disabled aria-label="Send message">
+											<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-7 20-4-9-9-4 20-7z"/><path d="M22 2 11 13"/></svg>
+										</button>
+									</div>
+								</footer>
 							</div>
 						</div>
 					</div>
@@ -735,8 +971,10 @@
 			</main>
 		</div>
 
-		<script src="js/api.js?v=2"></script>
-		<script src="js/app.js?v=2"></script>
+		<script src="js/api.js?v=3"></script>
+		<script src="js/dashboard.js?v=1"></script>
+		<script src="js/app.js?v=4"></script>
+		<script src="js/messages.js?v=8"></script>
 		<script src="js/video.js"></script>
 	</body>
 </html>
