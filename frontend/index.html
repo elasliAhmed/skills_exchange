@@ -18,99 +18,31 @@
 		/>
 		<link rel="stylesheet" href="css/messages.css" />
 		<link rel="stylesheet" href="css/dashboard.css" />
+		<link rel="stylesheet" href="css/offers.css" />
 	</head>
 	<body>
-		<div id="app">
+<div id="app">
 			<header class="header">
 				<div class="container">
-					<a href="#" data-page="home" class="logo"
-						>Skills Exchange</a
-					>
+					<a href="#" data-page="home" class="logo">Skills Exchange</a>
 					<nav class="nav" id="nav">
 						<a href="#" data-page="home">Home</a>
-
-						<a href="#" data-page="offers" class="user-only"
-							>Teaching Offers</a
-						>
-						<a href="#" data-page="login" class="auth-only"
-							>Login</a
-						>
-						<a href="#" data-page="register" class="auth-only"
-							>Register</a
-						>
-						<a href="#" data-page="dashboard" class="user-only"
-							>Dashboard</a
-						>
-						<a href="#" data-page="messages" class="user-only nav-messages"
-							>Messages
-							<span
-								id="messages-unread-badge"
-								class="nav-unread-badge"
-								style="display: none"
-							></span
-						></a>
-						<a href="#" data-page="profile" class="user-only"
-							>Profile</a
-						>
+						<a href="#" data-page="offers" class="user-only">Teaching Offers</a>
+						<a href="#" data-page="login" class="auth-only">Login</a>
+						<a href="#" data-page="register" class="auth-only">Register</a>
+						<a href="#" data-page="dashboard" class="user-only">Dashboard</a>
+						<a href="#" data-page="messages" class="user-only nav-messages">Messages<span id="messages-unread-badge" class="nav-unread-badge" style="display: none"></span></a>
+						<a href="#" data-page="profile" class="user-only">Profile</a>
 						<a href="#" id="logout" class="user-only">Logout</a>
 					</nav>
-					<div
-						id="header-credits"
-						class="header-credits user-only"
-						style="display: none"
-					>
-						<svg
-							width="18"
-							height="18"
-							viewBox="0 0 200 200"
-							xmlns="http://www.w3.org/2000/svg"
-							style="flex-shrink: 0"
-						>
+					<div id="header-credits" class="header-credits user-only" style="display: none">
+						<svg width="18" height="18" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="flex-shrink: 0">
 							<g transform="translate(100, 100)">
-								<ellipse
-									cx="0"
-									cy="0"
-									rx="80"
-									ry="80"
-									fill="#7c3aed"
-								/>
-								<ellipse
-									cx="0"
-									cy="0"
-									rx="80"
-									ry="80"
-									fill="none"
-									stroke="#6d28d9"
-									stroke-width="5"
-								/>
-								<ellipse
-									cx="0"
-									cy="0"
-									rx="68"
-									ry="68"
-									fill="#8b5cf6"
-								/>
-								<ellipse
-									cx="-20"
-									cy="-30"
-									rx="16"
-									ry="8"
-									fill="#c4b5fd"
-									opacity="0.5"
-									transform="rotate(-35)"
-								/>
-								<text
-									x="0"
-									y="6"
-									fill="#f5f3ff"
-									font-family="Georgia, serif"
-									font-weight="700"
-									font-size="56"
-									text-anchor="middle"
-									dominant-baseline="central"
-								>
-									C
-								</text>
+								<ellipse cx="0" cy="0" rx="80" ry="80" fill="#7c3aed"/>
+								<ellipse cx="0" cy="0" rx="80" ry="80" fill="none" stroke="#6d28d9" stroke-width="5"/>
+								<ellipse cx="0" cy="0" rx="68" ry="68" fill="#8b5cf6"/>
+								<ellipse cx="-20" cy="-30" rx="16" ry="8" fill="#c4b5fd" opacity="0.5" transform="rotate(-35)"/>
+								<text x="0" y="6" fill="#f5f3ff" font-family="Georgia, serif" font-weight="700" font-size="56" text-anchor="middle" dominant-baseline="central">C</text>
 							</g>
 						</svg>
 						<span id="header-credits-amount">0</span>
@@ -119,6 +51,7 @@
 			</header>
 
 			<main class="main-content">
+				<!-- Page: Home -->
 				<section id="page-home" class="page active">
 					<!-- Hero section -->
 					<div class="hero">
@@ -469,38 +402,126 @@
 				</section>
 
 				<section id="page-offers" class="page">
-					<div class="container">
-						<!-- My Offers Section -->
-						<div class="section-header">
-							<h2>My Offers</h2>
-							<button
-								class="btn btn-primary"
-								id="add-offer-btn"
-								style="margin-left: auto"
-							>
-								+ Create New Offer
-							</button>
+					<!-- Hero Section -->
+					<div class="offers-hero">
+						<div class="offers-hero-bg"></div>
+						<div class="container">
+							<h1 class="offers-hero-title">Learn Skills Directly From Real People</h1>
+							<p class="offers-hero-subtitle">Exchange knowledge, master new skills, and grow together in our community marketplace</p>
+							<div class="offers-search-container">
+								<div class="offers-search-wrapper">
+									<input type="text" id="offers-search" class="offers-search-input" placeholder="Search for skills, teachers, or topics..." />
+									<button class="offers-search-btn" id="offers-search-btn">
+										<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+											<circle cx="11" cy="11" r="8"></circle>
+											<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+										</svg>
+									</button>
+								</div>
+								<button class="offers-filter-btn" id="offers-filter-toggle">
+									<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+										<line x1="4" y1="21" x2="4" y2="7"></line>
+										<line x1="4" y1="7" x2="4" y2="3"></line>
+										<line x1="4" y1="3" x2="20" y2="3"></line>
+										<line x1="20" y1="7" x2="20" y2="21"></line>
+										<line x1="4" y1="21" x2="20" y2="21"></line>
+										<circle cx="12" cy="14" r="4"></circle>
+									</svg>
+									Filters
+								</button>
+							</div>
+							<div class="offers-trending">
+								<span class="offers-trending-label">Trending:</span>
+								<div class="offers-trending-tags">
+									<span class="offers-tag" data-skill="JavaScript">JavaScript</span>
+									<span class="offers-tag" data-skill="Design">Design</span>
+									<span class="offers-tag" data-skill="English">English</span>
+									<span class="offers-tag" data-skill="AI">AI</span>
+									<span class="offers-tag" data-skill="Python">Python</span>
+									<span class="offers-tag" data-skill="Marketing">Marketing</span>
+								</div>
+							</div>
 						</div>
-						<div id="my-offers-list" class="skills-grid"></div>
-						<p
-							id="my-offers-empty"
-							class="no-offers-msg"
-							style="display: none"
-						>
-							No offers yet. Create your first offer above.
-						</p>
-
-						<hr class="section-divider" />
-
-						<!-- Browse Offers Section -->
-						<div class="section-header">
-							<h2>Browse Offers</h2>
-						</div>
-					<div id="teaching-offers-list" class="skills-grid">
-						<p class="no-offers-msg">Loading offers...</p>
 					</div>
-				</div>
-			</section>
+
+					<div class="container offers-page-container">
+						<!-- Filters Sidebar -->
+						<aside class="offers-filters" id="offers-filters">
+							<div class="offers-filter-header">
+								<h3>Filters</h3>
+								<button class="offers-clear-filters" id="clear-filters">Clear All</button>
+							</div>
+							<div class="offers-filter-group">
+								<label>Skill Level</label>
+								<div class="offers-level-options">
+									<button class="offers-level-btn" data-level="beginner">Beginner</button>
+									<button class="offers-level-btn" data-level="intermediate">Intermediate</button>
+									<button class="offers-level-btn" data-level="advanced">Advanced</button>
+								</div>
+							</div>
+							<div class="offers-filter-group">
+								<label>Credits Range</label>
+								<div class="offers-credits-range">
+									<input type="number" id="credits-min" placeholder="Min" min="1" />
+									<span>to</span>
+									<input type="number" id="credits-max" placeholder="Max" min="1" />
+								</div>
+							</div>
+							<div class="offers-filter-group">
+								<label>Lessons</label>
+								<div class="offers-lessons-options">
+									<button class="offers-lesson-btn" data-count="1-5">1-5</button>
+									<button class="offers-lesson-btn" data-count="6-10">6-10</button>
+									<button class="offers-lesson-btn" data-count="10+">10+</button>
+								</div>
+							</div>
+						</aside>
+
+						<!-- Main Content -->
+						<main class="offers-main">
+							<div class="offers-toolbar">
+								<div class="offers-results-info">
+									<span id="offers-count">0</span> offers found
+								</div>
+								<div class="offers-sort">
+									<select id="offers-sort">
+										<option value="newest">Newest First</option>
+										<option value="price-low">Price: Low to High</option>
+										<option value="price-high">Price: High to Low</option>
+									</select>
+								</div>
+							</div>
+
+							<!-- Teaching Offers Grid -->
+							<div id="teaching-offers-grid" class="offers-grid">
+								<div class="offers-skeleton">
+									<div class="skeleton-card"></div>
+									<div class="skeleton-card"></div>
+									<div class="skeleton-card"></div>
+									<div class="skeleton-card"></div>
+									<div class="skeleton-card"></div>
+									<div class="skeleton-card"></div>
+								</div>
+							</div>
+
+							<!-- My Offers Section (for teachers) -->
+							<div id="my-offers-section" class="offers-my-section" style="display:none;">
+								<div class="section-header offers-section-header">
+									<h2>Your Teaching Offers</h2>
+									<button class="btn btn-primary" id="add-offer-btn">
+										<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+											<line x1="12" y1="5" x2="12" y2="19"></line>
+											<line x1="5" y1="12" x2="19" y2="12"></line>
+										</svg>
+										Create New Offer
+									</button>
+								</div>
+								<div id="my-offers-grid" class="offers-grid"></div>
+								<p id="my-offers-empty" class="no-offers-msg">No teaching offers yet. Create your first offer to start teaching!</p>
+							</div>
+						</main>
+					</div>
+				</section>
 
 			<!-- Student: My Lesson Details Modal -->
 			<div id="student-lessons-modal" class="modal-overlay" style="display:none;">
@@ -953,10 +974,7 @@
 							<video id="remote-video" autoplay></video>
 						</div>
 						<div class="video-controls">
-							<button
-								id="toggle-camera"
-								class="btn btn-secondary"
-							>
+							<button id="toggle-camera" class="btn btn-secondary">
 								Toggle Camera
 							</button>
 							<button id="toggle-mic" class="btn btn-secondary">
@@ -970,11 +988,12 @@
 				</section>
 			</main>
 		</div>
+	</div>
 
-		<script src="js/api.js?v=3"></script>
-		<script src="js/dashboard.js?v=1"></script>
-		<script src="js/app.js?v=4"></script>
-		<script src="js/messages.js?v=8"></script>
-		<script src="js/video.js"></script>
-	</body>
+	<script src="js/api.js?v=4"></script>
+	<script src="js/dashboard.js?v=1"></script>
+	<script src="js/app.js?v=5"></script>
+	<script src="js/messages.js?v=8"></script>
+	<script src="js/video.js"></script>
+</body>
 </html>

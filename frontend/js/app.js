@@ -861,6 +861,44 @@ async function loadMyOffers() {
 	const result = await apiInstance.getMyTeachingOffers();
 	if (result.success) {
 		renderMyOffers(result.data.offers);
+	}
+}
+
+async function loadAllOffers() {
+	const result = await apiInstance.getTeachingOffers();
+	if (result.success) {
+		renderTeachingOffers(result.data.offers);
+	}
+}
+
+function updateOffersCount(count) {
+	const countEl = document.getElementById('offers-count');
+	if (countEl) countEl.textContent = count;
+}
+
+async function loadSkills() {
+	// skills table was removed; users enter skill names directly on create/edit forms
+	console.debug('[loadSkills] stubbed — no skills catalogue');
+}
+
+// skills table removed — users type skill names directly into offer forms
+function renderSkills(skills, containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = "<p>Skill catalogue removed.</p>";
+}
+
+async function loadOffersPage() {
+	await Promise.all([
+		loadMyOffers(),
+		loadAllOffers(),
+	]);
+}
+
+async function loadMyOffers() {
+	const result = await apiInstance.getMyTeachingOffers();
+	if (result.success) {
+		renderMyOffers(result.data.offers);
 	} else {
 		document.getElementById("my-offers-list").innerHTML = "";
 	}
@@ -906,31 +944,68 @@ function cancelEnrollment(enrollmentId) {
 }
 
 function renderTeachingOffers(offers) {
-	const container = document.getElementById("teaching-offers-list");
+	const container = document.getElementById("teaching-offers-grid");
 	if (!offers || offers.length === 0) {
-		container.innerHTML = '<p class="no-offers-msg">No teaching offers found.</p>';
+		container.innerHTML = '<div class="no-offers-msg" style="grid-column: 1/-1; padding: 60px 0;">No teaching offers found. Be the first to create one!</div>';
+		updateOffersCount(0);
 		return;
 	}
-	container.innerHTML = offers
-		.map(
-			(offer) => `
-        <div class="skill-card offer-card">
-            <h4>${offer.name || 'Untitled Skill'}</h4>
-            <p class="offer-teacher">
-                <span class="offer-teacher-avatar">${(offer.full_name || offer.username || '?')[0].toUpperCase()}</span>
-                ${offer.full_name || offer.username}
-            </p>
-            ${offer.description ? `<p class="offer-desc">${offer.description}</p>` : ''}
-            ${offer.skill_level ? `<p class="offer-level">Level: ${offer.skill_level}</p>` : ''}
-            ${offer.lesson_format ? `<p class="offer-format"><b>How it works:</b> ${offer.lesson_format}</p>` : ''}
-            ${offer.learner_gains ? `<p class="offer-gains"><b>What you'll get:</b> ${offer.learner_gains}</p>` : ''}
-            <p class="offer-credits">${offer.credits} credits / lesson</p>
-            <p class="offer-lessons">${offer.lessons_count || 1} lesson${offer.lessons_count !== 1 ? 's' : ''}</p>
-            <button class="btn btn-primary enroll-btn" onclick="enrollInOffer(${offer.offer_id})">Enroll</button>
-        </div>
-    `,
-		)
-		.join("");
+	updateOffersCount(offers.length);
+	container.innerHTML = offers.map((offer) => {
+		const levelClass = offer.skill_level?.toLowerCase() || 'beginner';
+		const teacherInitial = (offer.full_name || offer.username || '?')[0].toUpperCase();
+		const description = offer.description || offer.learner_gains || 'No description available';
+		const lessonCount = offer.lessons_count || 1;
+		return `
+			<div class="offer-card" data-offer-id="${offer.offer_id}">
+				<div class="offer-card-header">
+					<div class="offer-card-banner"></div>
+					<span class="offer-level-badge">${offer.skill_level || 'Beginner'}</span>
+				</div>
+				<div class="offer-teacher-row">
+					<div class="offer-teacher-avatar">${teacherInitial}</div>
+					<div class="offer-teacher-details">
+						<p class="offer-teacher-name">${offer.full_name || offer.username}</p>
+						<div class="offer-rating">
+							<span>★</span><span>4.8</span><span>(24)</span>
+						</div>
+					</div>
+				</div>
+				<div class="offer-content">
+					<h3 class="offer-title">${offer.name || 'Untitled Skill'}</h3>
+					<p class="offer-description">${description}</p>
+					<div class="offer-features">
+						<div class="offer-feature">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<polygon points="22 11 12 2 2 11 12 20 21 11 12 2"></polygon>
+							</svg>
+							<span>Live practice sessions</span>
+						</div>
+						<div class="offer-feature">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+								<polyline points="22 4 12 14.01 9 11.01"></polyline>
+							</svg>
+							<span>Personalized learning path</span>
+						</div>
+					</div>
+					<div class="offer-tags">
+						<span class="offer-tag">${offer.skill_level || 'All Levels'}</span>
+						<span class="offer-tag">${lessonCount} lesson${lessonCount !== 1 ? 's' : ''}</span>
+					</div>
+				</div>
+				<div class="offer-footer">
+					<div class="offer-pricing">
+						<p class="offer-price">${offer.credits || 5} credits</p>
+						<span class="offer-lessons">~/lesson</span>
+					</div>
+					<div class="offer-actions">
+						<button class="offer-btn offer-btn-primary" onclick="enrollInOffer(${offer.offer_id})">Enroll</button>
+					</div>
+				</div>
+			</div>
+		`;
+	}).join('');
 }
 
 async function enrollInOffer(offer_id) {
