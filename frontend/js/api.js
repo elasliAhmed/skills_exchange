@@ -172,4 +172,24 @@ class API {
     getOfferLearners(offer_id) {
         return this.request(`teaching-offers.php?learners=${offer_id}`, 'GET');
     }
+
+    // Messaging (one conversation per user)
+    getConversations() {
+        return this.request('messages.php?endpoint=conversations', 'GET');
+    }
+
+    getConversation(userId) {
+        return this.request(`messages.php?user_id=${userId}`, 'GET');
+    }
+
+    sendMessage(receiverId, message) {
+        return this.request('messages.php', 'POST', {
+            receiver_id: receiverId,
+            message
+        });
+    }
+
+    getUnreadMessageCount() {
+        return this.request('messages.php?endpoint=unread', 'GET');
+    }
 }

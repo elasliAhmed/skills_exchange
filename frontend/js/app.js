@@ -12,11 +12,19 @@ function showPage(page) {
 		.forEach((p) => p.classList.remove("active"));
 	document.getElementById(`page-${page}`).classList.add("active");
 
+	document.body.classList.toggle("dash-mode", page === "dashboard");
+	if (page === "dashboard" && typeof DashboardUI !== "undefined") {
+		DashboardUI.setActiveNav("dashboard");
+		DashboardUI.syncProfileSidebar();
+	}
+
 	updateNav();
 	if (page === "dashboard") loadDashboard();
 	if (page === "profile") loadProfile();
 	if (page === "offers") loadOffersPage();
 	if (page === "add-offer") loadAddOfferPage();
+	if (page === "messages") loadMessagesPage();
+	else stopMessagesPolling();
 }
 
 async function handleLogin(e) {
@@ -90,6 +98,12 @@ function updateNav() {
 		creditsEl.style.display = "flex";
 		amountEl.textContent = user.credits || 0;
 		console.debug('[updateNav] Set credits to:', user.credits || 0);
+	}
+	if (user && typeof refreshUnreadBadge === 'function') {
+		refreshUnreadBadge();
+	} else {
+		const badge = document.getElementById('messages-unread-badge');
+		if (badge) badge.style.display = 'none';
 	}
 }
 
@@ -210,45 +224,39 @@ async function loadTeacherStats() {
 
 async function loadTeacherEnrollments() {
     const result = await apiInstance.getTeacherEnrollments();
-    if (!result.success) {
-        document.getElementById('teacher-enrollments-list').innerHTML =
-            '<p class="no-offers-msg">No students yet.</p>';
-        return;
-    }
-    const list = result.data.enrollments || [];
-    const container = document.getElementById('teacher-enrollments-list');
+    renderTeacherEnrollments(result.success ? result.data.enrollments || [] : []);
+}
+
+function renderTeacherEnrollments(list) {
+    const container = document.getElementById("teacher-enrollments-list");
     if (!container) return;
-
-    if (list.length === 0) {
-        container.innerHTML = '<p class="no-offers-msg">No students yet. Share your offers to attract learners!</p>';
+    if (!list.length) {
+        container.innerHTML = '<p class="dash-empty">No students yet. Share your offers to attract learners!</p>';
         return;
     }
-
-    container.innerHTML = list.map(
-        (e) => {
-            const lc   = (e.lessons_count      ?? 0);
-            const done = (e.completed_lessons  ?? 0);
-            const rem  = (e.remaining_lessons  ?? 0);
-            const pct  = lc > 0 ? Math.round((done / lc) * 100) : 0;
-            return `
-            <div class="teacher-enrollment-row">
-                <div class="teacher-enrollment-info">
-                    <div class="teacher-enrollment-title">${e.skill_name || 'Untitled'}</div>
-                    <div class="teacher-enrollment-sub">${e.learner_username || 'Unknown student'}</div>
-                    <div style="margin-top:6px;">
-                        <div class="progress-label">
-                            <span>Progress</span>
-                            <span class="progress-text">${done}/${lc} lessons · ${rem} left</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width:${pct}%"></div>
-                        </div>
-                    </div>
-                </div>
-                <button class="btn btn-primary" onclick="openTeacherEnrollmentModal(${e.id}, '${(e.learner_username || '').replace(/'/g, "\\'")}', '${(e.skill_name || '').replace(/'/g, "\\'")}', ${(e.credits ?? 0)})">Open</button>
-            </div>`;
+    const D = typeof DashboardUI !== "undefined" ? DashboardUI : null;
+    container.innerHTML = list.map((e) => {
+        const lc = e.lessons_count ?? 0;
+        const done = e.completed_lessons ?? 0;
+        const pct = lc > 0 ? Math.round((done / lc) * 100) : 0;
+        const studentName = e.learner_name || e.learner_username || "Student";
+        const statusClass = e.status === "completed" ? "completed" : e.status === "active" ? "active" : "pending";
+        const btnGhost = `<button type="button" class="dash-btn dash-btn-ghost" onclick="openMessagesWithUser(${e.learner_id}, '${studentName.replace(/'/g, "\\'")}')">Message</button>`;
+        const btnPrimary = `<button type="button" class="dash-btn dash-btn-primary" onclick="openTeacherEnrollmentModal(${e.id}, '${(e.learner_username || "").replace(/'/g, "\\'")}', '${(e.skill_name || "").replace(/'/g, "\\'")}', ${e.credits ?? 0})">Open</button>`;
+        if (D) {
+            return D.lessonCardHtml({
+                title: e.skill_name || "Untitled",
+                meta: `Student: ${studentName}`,
+                pct, done, total: lc,
+                status: e.status || "active",
+                statusClass,
+                avatarName: studentName,
+                avatarId: e.learner_id,
+                btnPrimary, btnGhost,
+            });
         }
-).join('');
+        return `<div>${e.skill_name}</div>`;
+    }).join("");
 }
 
 let _currentTeacherEnrollment = null;
@@ -457,40 +465,39 @@ async function loadStudentStats() {
 
 async function loadStudentEnrollments() {
     const result = await apiInstance.getStudentEnrollments();
-    if (!result.success) {
-        document.getElementById('student-enrollments-list').innerHTML =
-            '<p class="no-offers-msg">No enrollments yet. Browse offers to enroll!</p>';
+    renderStudentEnrollments(result.success ? result.data.enrollments || [] : []);
+}
+
+function renderStudentEnrollments(list) {
+    const container = document.getElementById("student-enrollments-list");
+    if (!container) return;
+    if (!list.length) {
+        container.innerHTML = '<p class="dash-empty">No enrollments yet. Browse offers to get started!</p>';
         return;
     }
-    const list = result.data.enrollments || [];
-    const container = document.getElementById('student-enrollments-list');
-    if (list.length === 0) {
-        container.innerHTML = '<p class="no-offers-msg">No enrollments yet. Browse offers to get started!</p>';
-        return;
-    }
-    container.innerHTML = list.map(e => {
+    const D = typeof DashboardUI !== "undefined" ? DashboardUI : null;
+    container.innerHTML = list.map((e) => {
         const lessonsCount = e.lessons_count || 0;
         const completedLessons = e.completed_lessons || 0;
         const pct = lessonsCount > 0 ? Math.round((completedLessons / lessonsCount) * 100) : 0;
-        const statusClass = e.status === 'completed' ? 'completed' : e.status === 'active' ? 'active' : 'pending';
-        const teacherName = e.teacher_full_name || e.teacher_name || 'Unknown';
-        return `
-        <div class="skill-card offer-card">
-            <h4>${e.skill_name || 'Untitled'}</h4>
-            <p class="offer-teacher">Teacher: ${teacherName}</p>
-            <span class="status-badge status-${statusClass}">${e.status || 'unknown'}</span>
-            <div style="margin-top:8px;">
-                <div class="progress-label">
-                    <span>Progress</span>
-                    <span class="progress-text">${completedLessons}/${lessonsCount} lessons</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width:${pct}%"></div>
-                </div>
-            </div>
-            <button class="btn btn-primary" style="width:100%;margin-top:8px;" onclick="openStudentLessonsModal(${e.id}, '${(e.skill_name || '').replace(/'/g, "\\'")}', '${(teacherName).replace(/'/g, "\\'")}', ${(e.credits ?? 0)})">View Lessons</button>
-        </div>`;
-    }).join('');
+        const statusClass = e.status === "completed" ? "completed" : e.status === "active" ? "active" : "pending";
+        const teacherName = e.teacher_full_name || e.teacher_name || "Unknown";
+        const btnGhost = `<button type="button" class="dash-btn dash-btn-ghost" onclick="openMessagesWithUser(${e.teacher_id}, '${teacherName.replace(/'/g, "\\'")}')">Message</button>`;
+        const btnPrimary = `<button type="button" class="dash-btn dash-btn-primary" onclick="openStudentLessonsModal(${e.id}, '${(e.skill_name || "").replace(/'/g, "\\'")}', '${teacherName.replace(/'/g, "\\'")}', ${e.credits ?? 0})">Continue</button>`;
+        if (D) {
+            return D.lessonCardHtml({
+                title: e.skill_name || "Untitled",
+                meta: `Teacher: ${teacherName}`,
+                pct, done: completedLessons, total: lessonsCount,
+                status: e.status || "active",
+                statusClass,
+                avatarName: teacherName,
+                avatarId: e.teacher_id,
+                btnPrimary, btnGhost,
+            });
+        }
+        return `<div>${e.skill_name}</div>`;
+    }).join("");
 }
 
 // ── Student Lesson Details ──────────────────────────────────────
@@ -600,30 +607,51 @@ async function loadDashboard() {
 	const user = getUser();
 	if (!user) return;
 	const amountEl = document.getElementById("header-credits-amount");
-	if (amountEl) {
-		amountEl.textContent = user.credits || 0;
-		console.debug('[loadDashboard] Set credits to:', user.credits || 0);
-	}
-	
-	// Check if this user has teaching offers (is a teacher)
-	const result = await apiInstance.getMyTeachingOffers();
-	const isTeacher = result.success && result.data && result.data.offers && result.data.offers.length > 0;
-	
-	console.debug('[loadDashboard] isTeacher:', isTeacher, result);
-	
-	// Show both dashboards - teacher dashboard only if user is a teacher
-	const teacherDashboard = document.getElementById('teacher-dashboard');
-	const studentDashboard = document.getElementById('student-dashboard');
-	
-	if (teacherDashboard) teacherDashboard.style.display = isTeacher ? 'block' : 'none';
-	if (studentDashboard) studentDashboard.style.display = 'block';
-	
+	if (amountEl) amountEl.textContent = user.credits || 0;
+
+	if (typeof DashboardUI !== "undefined") DashboardUI.syncProfileSidebar();
+
+	const offersResult = await apiInstance.getMyTeachingOffers();
+	const isTeacher = offersResult.success && offersResult.data?.offers?.length > 0;
+	const teachingCount = isTeacher ? offersResult.data.offers.length : 0;
+
+	const teacherDashboard = document.getElementById("teacher-dashboard");
+	const studentDashboard = document.getElementById("student-dashboard");
+	if (teacherDashboard) teacherDashboard.style.display = isTeacher ? "contents" : "none";
+	if (studentDashboard) studentDashboard.style.display = "contents";
+
+	let teacherStats = {};
+	let studentStats = {};
+	let teacherEnrollments = [];
+	let studentEnrollments = [];
+
 	if (isTeacher) {
+		const [ts, te] = await Promise.all([
+			apiInstance.getTeacherStats(),
+			apiInstance.getTeacherEnrollments(),
+		]);
+		if (ts.success) teacherStats = ts.data;
+		if (te.success) teacherEnrollments = te.data.enrollments || [];
 		loadTeacherStats();
-		loadTeacherEnrollments();
+		renderTeacherEnrollments(teacherEnrollments);
 	}
+
+	const [ss, se] = await Promise.all([
+		apiInstance.getStudentStats(),
+		apiInstance.getStudentEnrollments(),
+	]);
+	if (ss.success) studentStats = ss.data;
+	if (se.success) studentEnrollments = se.data.enrollments || [];
 	loadStudentStats();
-	loadStudentEnrollments();
+	renderStudentEnrollments(studentEnrollments);
+
+	if (typeof DashboardUI !== "undefined") {
+		DashboardUI.updateHero(user, studentStats, teacherStats, isTeacher);
+		DashboardUI.updateStatCards(user, studentStats, teacherStats, teachingCount, isTeacher);
+		DashboardUI.renderActivityFeed(studentEnrollments, teacherEnrollments, user);
+		DashboardUI.renderCalendarPreview(studentEnrollments.length ? studentEnrollments : teacherEnrollments);
+		await DashboardUI.loadMessagesPreview();
+	}
 }
 
 async function loadEnrollmentsTab(filter) {

@@ -68,18 +68,18 @@ CREATE TABLE transactions (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Messages table for chat
+-- Messages table for enrollment-scoped chat
 CREATE TABLE messages (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    enrollment_id INT NOT NULL,
     sender_id INT NOT NULL,
     receiver_id INT NOT NULL,
-    lesson_request_id INT,
     message TEXT NOT NULL,
-    read_status BOOLEAN DEFAULT FALSE,
+    read_status TINYINT(1) DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (enrollment_id) REFERENCES enrollments(id) ON DELETE CASCADE,
     FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (lesson_request_id) REFERENCES lesson_requests(id) ON DELETE SET NULL
+    FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 -- Reviews table
