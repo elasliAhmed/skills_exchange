@@ -902,3 +902,27 @@ button,
     background: rgba(239, 68, 68, 0.12);
     color: var(--color-danger);
 }
+
+/* ── Final Course Comment ── */
+.student-final-comment {
+    margin: 12px 0;
+    padding: 14px 16px;
+    background: linear-gradient(135deg, #f0f9ff, #ecfdf5);
+    border-radius: 8px;
+    border: 1px solid #bae6fd;
+}
+.student-final-comment h4 {
+    margin: 0 0 8px;
+    font-size: 14px;
+    color: var(--color-text-primary);
+}
+.student-final-comment .teacher-comment {
+    border-left-color: var(--color-accent-dark);
+}
+.teacher-comment-date {
+    font-size: 11px;
+    color: var(--color-text-muted);
+    display: block;
+    margin-top: 4px;
+}
+
