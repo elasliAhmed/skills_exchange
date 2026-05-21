@@ -65,7 +65,8 @@ if ($method === 'GET') {
             $user_id,
             $input['skill_name'],
             'teach',
-            $input['credits'],
+            (int)$input['credits'],
+            (int)($input['lessons_count'] ?? 1),
             $input['skill_description'] ?? null,
             $input['skill_level'] ?? null,
             $input['lesson_format'] ?? null,
@@ -76,7 +77,8 @@ if ($method === 'GET') {
             $user_id,
             $input['skill_name'],
             'teach',
-            $input['credits'],
+            (int)$input['credits'],
+            (int)($input['lessons_count'] ?? 1),
             $input['skill_description'] ?? null,
             $input['skill_level'] ?? null,
             $input['lesson_format'] ?? null,
@@ -95,16 +97,18 @@ if ($method === 'GET') {
         echo json_encode(['success' => false, 'data' => ['error' => 'Not found or unauthorized']]);
         exit;
     }
-    $input['skill_name']       = $input['skill_name']       ?? $offer['skill_name'];
-    $input['credits']          = $input['credits']          ?? $offer['credits'];
-    $input['skill_description']= $input['skill_description']?? $offer['skill_description'] ?? null;
-    $input['skill_level']      = $input['skill_level']      ?? $offer['skill_level']       ?? null;
-    $input['lesson_format']    = $input['lesson_format']    ?? $offer['lesson_format']     ?? null;
-    $input['learner_gains']    = $input['learner_gains']    ?? $offer['learner_gains']     ?? null;
+    $input['skill_name']        = $input['skill_name']        ?? $offer['skill_name'];
+    $input['credits']           = (int)($input['credits']          ?? $offer['credits']);
+    $input['lessons_count']     = (int)($input['lessons_count']    ?? $offer['lessons_count']     ?? 1);
+    $input['skill_description'] = $input['skill_description'] ?? $offer['skill_description'] ?? null;
+    $input['skill_level']       = $input['skill_level']       ?? $offer['skill_level']        ?? null;
+    $input['lesson_format']     = $input['lesson_format']     ?? $offer['lesson_format']      ?? null;
+    $input['learner_gains']     = $input['learner_gains']     ?? $offer['learner_gains']      ?? null;
     $userSkill->updateDetails(
         $user_id,
         $input['skill_name'], 'teach',
         (int)$input['credits'],
+        (int)$input['lessons_count'],
         $input['skill_description'],
         $input['skill_level'],
         $input['lesson_format'],

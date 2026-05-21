@@ -11,14 +11,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/Enrollment.php';
+require_once __DIR__ . '/../config/jwt.php';
 
 $database = new Database();
 $enrollment = new Enrollment($database);
 
-$user_id = isset($_SERVER['HTTP_AUTHORIZATION'])
-    ? JWT::getUserId()
-    : null;
-
+$user_id = JWT::getUserId();
 if (!$user_id) {
     echo json_encode(['success' => false, 'data' => ['error' => 'Authentication required']]);
     exit;
