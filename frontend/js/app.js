@@ -4,15 +4,40 @@ let apiInstance = new API();
 // Make functions globally available
 const APP_SHELL_PAGES = ['dashboard', 'offers', 'messages', 'profile', 'add-offer', 'video'];
 
+function openAuthModal(which) {
+	closeAuthModals();
+	const id = which === 'register' ? 'auth-register-modal' : 'auth-login-modal';
+	const modal = document.getElementById(id);
+	if (!modal) return;
+	modal.style.display = 'flex';
+	modal.classList.add('is-open');
+	document.body.classList.add('auth-modal-open');
+	const firstInput = modal.querySelector('input');
+	if (firstInput) setTimeout(() => firstInput.focus(), 100);
+}
+
+function closeAuthModals() {
+	document.querySelectorAll('.auth-modal-overlay').forEach((m) => {
+		m.style.display = 'none';
+		m.classList.remove('is-open');
+	});
+	document.body.classList.remove('auth-modal-open');
+}
+
 function showPage(page) {
-	if (!_authReady && (page !== 'login' && page !== 'register' && page !== 'home')) {
+	if (!_authReady && page !== 'home') {
 		console.debug('[showPage] waiting for auth…');
 		return;
 	}
 	document
 		.querySelectorAll(".page")
 		.forEach((p) => p.classList.remove("active"));
-	document.getElementById(`page-${page}`).classList.add("active");
+	const pageEl = document.getElementById(`page-${page}`);
+	if (!pageEl) {
+		console.error('[showPage] Unknown page:', page);
+		return;
+	}
+	pageEl.classList.add("active");
 
 	const isAppPage = APP_SHELL_PAGES.includes(page);
 	document.body.classList.toggle("dash-mode", page === "dashboard");
@@ -25,9 +50,19 @@ function showPage(page) {
 	}
 	if (typeof AppShell !== "undefined") {
 		AppShell.onNavigate(page);
+		AppShell.syncTopbarAuth();
 	}
 
 	updateNav();
+	if (page === "home" && typeof LandingUI !== "undefined") {
+		LandingUI.refreshAvatar();
+		requestAnimationFrame(() => {
+			document.querySelectorAll("#page-home .reveal").forEach((el) => {
+				const rect = el.getBoundingClientRect();
+				if (rect.top < window.innerHeight) el.classList.add("is-visible");
+			});
+		});
+	}
 	if (page === "dashboard") loadDashboard();
 	if (page === "profile") loadProfile();
 	if (page === "offers") loadOffersPage();
@@ -46,23 +81,27 @@ async function handleLogin(e) {
 	console.log('[login] result:', JSON.stringify(result));
 	if (result.success) {
 		apiInstance.setToken(result.data.token);
-		const userStr = JSON.stringify(result.data.user);
-		localStorage.setItem("user", userStr);
-		console.log('[login] user stored:', userStr);
+		localStorage.setItem("user", JSON.stringify(result.data.user));
+		console.log('[login] user stored:', result.data.user);
+		_authReady = true;
+		closeAuthModals();
 		updateNav();
 		showPage("dashboard");
 		loadDashboard();
-	} else {
-		console.error('[login] failed:', result.data);
+		return;
 	}
-	alert(result.data.message || result.data.error || 'Login failed');
+	console.error('[login] failed:', result.data);
+	const errMsg = result.data?.error || result.data?.message || (Array.isArray(result.data) ? result.data[0] : null) || 'Login failed';
+	alert(errMsg);
 }
 
 function logout() {
 	apiInstance.clearToken();
 	localStorage.removeItem("user");
+	_authReady = true;
 	updateNav();
 	showPage("home");
+	if (typeof LandingUI !== "undefined") LandingUI.refreshAvatar();
 }
 
 // Track whether auth check has finished
@@ -72,12 +111,10 @@ async function checkAuth() {
 	try {
 		const result = await apiInstance.verifyToken();
 		console.log('[checkAuth] verify:', JSON.stringify(result));
-		if (result.success) {
+		if (result.success && result.data?.user) {
 			localStorage.setItem("user", JSON.stringify(result.data.user));
 			console.log('[checkAuth] user stored:', result.data.user);
-			console.log('[checkAuth] user credits:', result.data.user.credits);
 		} else {
-			// Token dead — nuke everything
 			apiInstance.clearToken();
 			localStorage.removeItem("user");
 		}
@@ -85,29 +122,30 @@ async function checkAuth() {
 		console.error('[checkAuth] threw:', error);
 		apiInstance.clearToken();
 		localStorage.removeItem("user");
+	} finally {
+		updateNav();
+		_authReady = true;
 	}
-	// Always re-evaluate the nav AFTER auth state is final
-	updateNav();
-	_authReady = true;
 }
 
 function updateNav() {
-	const user = JSON.parse(localStorage.getItem("user"));
+	const user = getUser();
 	console.debug('[updateNav] user:', user);
-	console.debug('[updateNav] user.credits:', user?.credits);
-	document.querySelectorAll(".auth-only").forEach((el) => {
-		el.style.display = user ? "none" : "inline";
+	document.body.classList.toggle("logged-in", !!user);
+
+	// Clear inline display overrides so CSS body.logged-in rules apply
+	document.querySelectorAll(".auth-only, .user-only").forEach((el) => {
+		el.style.removeProperty("display");
 	});
-	document.querySelectorAll(".user-only").forEach((el) => {
-		el.style.display = user ? "inline" : "none";
-	});
-	const creditsEl = document.getElementById("header-credits");
+
+	if (typeof LandingUI !== "undefined") LandingUI.refreshAvatar();
+	if (typeof AppShell !== "undefined") AppShell.syncTopbarAuth();
+
+	const credits = user?.credits ?? 0;
 	const amountEl = document.getElementById("header-credits-amount");
-	if (user && creditsEl && amountEl) {
-		creditsEl.style.display = "flex";
-		amountEl.textContent = user.credits || 0;
-		console.debug('[updateNav] Set credits to:', user.credits || 0);
-	}
+	const landingCredits = document.getElementById("landing-nav-credits-amount");
+	if (amountEl) amountEl.textContent = credits;
+	if (landingCredits) landingCredits.textContent = credits;
 	if (user && typeof refreshUnreadBadge === 'function') {
 		refreshUnreadBadge();
 	} else {
@@ -117,20 +155,31 @@ function updateNav() {
 }
 
 function getUser() {
-	const user = JSON.parse(localStorage.getItem("user"));
-	console.debug('[getUser]', user);
-	return user;
+	try {
+		const raw = localStorage.getItem("user");
+		if (!raw) return null;
+		const user = JSON.parse(raw);
+		return user && typeof user === "object" ? user : null;
+	} catch (e) {
+		console.warn('[getUser] invalid user in localStorage', e);
+		localStorage.removeItem("user");
+		return null;
+	}
 }
 
 document.addEventListener("DOMContentLoaded", async function () {
 	console.log("DOM loaded");
 	setupEventListeners();
-	// Pulse nav from cached localStorage
-	updateNav();
-	// Wait for auth verification to finish before anything else
+	try {
+		updateNav();
+	} catch (e) {
+		console.error('[init] updateNav failed', e);
+	}
 	await checkAuth();
+	const user = getUser();
 	showPage("home");
 	loadSkills();
+	if (user) loadDashboard();
 	
 	// Header scroll shadow
 	window.addEventListener('scroll', function() {
@@ -151,27 +200,49 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 function setupEventListeners() {
 	console.log("Setting up event listeners");
-	document.querySelectorAll("[data-page]").forEach((link) => {
-		link.addEventListener("click", function (e) {
+	// Event delegation — works for sidebar/links injected after load (AppShell)
+	const AUTH_REQUIRED_PAGES = ["dashboard", "messages", "profile", "add-offer"];
+	document.addEventListener("click", function (e) {
+		if (e.target.closest(".logout-btn")) {
 			e.preventDefault();
-			console.log("Navigating to:", this.dataset.page);
-			showPage(this.dataset.page);
+			logout();
+			return;
+		}
+		if (e.target.closest("[data-auth-close]")) {
+			e.preventDefault();
+			closeAuthModals();
+			return;
+		}
+		const authTrigger = e.target.closest("[data-auth-modal]");
+		if (authTrigger?.dataset.authModal) {
+			e.preventDefault();
+			openAuthModal(authTrigger.dataset.authModal);
+			return;
+		}
+		const link = e.target.closest("[data-page]");
+		if (!link || !link.dataset.page) return;
+		e.preventDefault();
+		const page = link.dataset.page;
+		if (AUTH_REQUIRED_PAGES.includes(page)) {
+			const user = getUser();
+			const hasToken = !!localStorage.getItem("token");
+			if (!user && !hasToken) {
+				openAuthModal("login");
+				return;
+			}
+		}
+		console.log("Navigating to:", page);
+		showPage(page);
+	});
+
+	document.querySelectorAll(".auth-modal-overlay").forEach((overlay) => {
+		overlay.addEventListener("click", (e) => {
+			if (e.target === overlay) closeAuthModals();
 		});
 	});
 
-	document.getElementById("logout")?.addEventListener("click", function (e) {
-		e.preventDefault();
-		logout();
-	});
-
-	document.getElementById("add-offer-btn")?.addEventListener("click", function () {
-		updateNav();
-		if (!getUser()) {
-			alert("Please login first");
-			showPage("login");
-			return;
-		}
-		showPage("add-offer");
+	document.addEventListener("keydown", (e) => {
+		if (e.key === "Escape") closeAuthModals();
 	});
 
 	document.getElementById("login-form")?.addEventListener("submit", handleLogin);
@@ -213,9 +284,12 @@ async function handleRegister(e) {
 		full_name: form.full_name.value,
 	});
 	if (result.success) {
-		showPage("login");
+		closeAuthModals();
+		openAuthModal("login");
+		alert(result.data.message || "Account created! Please sign in.");
+		return;
 	}
-	alert(result.data.message || result.data.error);
+	alert(result.data?.error || result.data?.message || (Array.isArray(result.data) ? result.data[0] : null) || "Registration failed");
 }
 
 async function handleProfileUpdate(e) {
@@ -965,7 +1039,7 @@ function renderTeachingOffers(offers) {
 async function enrollInOffer(offer_id) {
 	const user = getUser();
 	if (!user) {
-		alert("Please login first");
+		openAuthModal("login");
 		return;
 	}
 	const result = await apiInstance.enrollInOffer(offer_id);
@@ -988,8 +1062,7 @@ async function handleAddOffer(e) {
 		e.preventDefault();
 		const user = getUser();
 		if (!user) {
-			alert("Please login first");
-			showPage("login");
+			openAuthModal("login");
 			return;
 		}
 

@@ -1,16 +1,97 @@
-/* Auth — premium split layout */
-.page-auth {
-    min-height: 100vh;
+/* Auth modals — open on click, stay on landing page */
+
+.auth-modal-overlay {
+    z-index: 1100;
+    align-items: center;
+    padding: 1.5rem;
 }
 
-.page-auth.active {
+.auth-modal-overlay[style*="flex"],
+.auth-modal-overlay.is-open {
     display: flex !important;
+}
+
+.auth-modal-content {
+    position: relative;
+    max-width: 920px;
+    width: 100%;
+    padding: 0;
+    overflow: hidden;
+    border-radius: 24px;
+    animation: authModalIn 0.35s ease;
+}
+
+@keyframes authModalIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.auth-modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 5;
+    width: 40px;
+    height: 40px;
+    display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #e5e7eb;
 }
 
-.auth-split {
-    animation: dsSlideUp 0.4s ease;
+.auth-modal-content .auth-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 0;
+    animation: none;
+}
+
+.auth-modal-content .auth-split-brand {
+    padding: 2.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: linear-gradient(135deg, #1e1b4b 0%, #4f46e5 60%, #7c3aed 100%);
+}
+
+.auth-modal-content .auth-split-brand h2 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #fff;
+    margin: 0 0 1rem;
+    letter-spacing: -0.03em;
+}
+
+.auth-modal-content .auth-split-brand p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.auth-modal-content .auth-split-form {
+    padding: 2.5rem 2rem;
+}
+
+.auth-modal-content .auth-split-form h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+}
+
+.auth-modal-content .auth-split-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
 .auth-split-form .auth-switch {
@@ -28,28 +109,6 @@
 
 .auth-split-form .auth-switch a:hover {
     text-decoration: underline;
-}
-
-.btn-block {
-    width: 100%;
-    padding: 0.75rem 1.25rem;
-    font-size: 1rem;
-}
-
-.auth-form-container {
-    background: var(--color-surface);
-    padding: var(--spacing-xl);
-    border-radius: 20px;
-    box-shadow: var(--shadow-card);
-    border: 1px solid var(--color-border);
-}
-
-.auth-form-container h2 {
-    color: var(--color-text-primary);
-    margin-bottom: var(--spacing-xl);
-    text-align: center;
-    font-weight: 800;
-    letter-spacing: -0.02em;
 }
 
 .form-group label {
@@ -74,4 +133,27 @@
     outline: none;
     border-color: #818cf8;
     box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
+}
+
+.btn-block {
+    width: 100%;
+    padding: 0.75rem 1.25rem;
+    font-size: 1rem;
+    margin-top: 0.25rem;
+}
+
+body.auth-modal-open {
+    overflow: hidden;
+}
+
+@media (max-width: 768px) {
+    .auth-modal-content .auth-split {
+        grid-template-columns: 1fr;
+    }
+    .auth-modal-content .auth-split-brand {
+        padding: 2rem 1.5rem 1.5rem;
+    }
+    .auth-modal-content .auth-split-form {
+        padding: 1.5rem;
+    }
 }

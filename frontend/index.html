@@ -7,7 +7,7 @@
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
-			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
 			rel="stylesheet"
 		/>
 		<link rel="stylesheet" href="/skills_exchange/frontend/css/style.css" />
@@ -35,10 +35,10 @@
 						<a href="#" data-page="offers" class="user-only"
 							>Teaching Offers</a
 						>
-						<a href="#" data-page="login" class="auth-only"
+						<a href="#" data-auth-modal="login" class="auth-only"
 							>Login</a
 						>
-						<a href="#" data-page="register" class="auth-only"
+						<a href="#" data-auth-modal="register" class="auth-only"
 							>Register</a
 						>
 						<a href="#" data-page="dashboard" class="user-only"
@@ -55,7 +55,10 @@
 						<a href="#" data-page="profile" class="user-only"
 							>Profile</a
 						>
-						<a href="#" id="logout" class="user-only">Logout</a>
+						<button type="button" id="logout" class="user-only btn-nav-logout logout-btn" aria-label="Logout">
+							<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+							<span>Logout</span>
+						</button>
 					</nav>
 					<div
 						id="header-credits"
@@ -124,38 +127,80 @@
 			<main class="main-content">
 				<section id="page-home" class="page active">
 					<div class="page-home-inner">
-						<nav class="landing-nav" id="landing-nav">
-							<div class="container">
+						<nav class="landing-nav" id="landing-nav" aria-label="Main navigation">
+							<div class="landing-nav-inner">
 								<a href="#" data-page="home" class="landing-logo">
 									<span class="landing-logo-icon">SE</span>
-									Skills Exchange
+									<span class="landing-logo-text">Skills Exchange</span>
 								</a>
-								<div class="landing-nav-links">
-									<a href="#" data-page="offers" class="user-only">Offers</a>
-									<a href="#" data-page="dashboard" class="user-only">Dashboard</a>
-									<a href="#" data-page="login" class="auth-only">Login</a>
-									<a href="#" data-page="register" class="auth-only landing-cta-nav">Get Started</a>
-									<a href="#" data-page="dashboard" class="user-only landing-cta-nav">Open Dashboard</a>
+
+								<button type="button" class="landing-menu-toggle" id="landing-menu-toggle" aria-label="Open menu" aria-expanded="false">
+									<span></span><span></span><span></span>
+								</button>
+
+								<div class="landing-nav-menu" id="landing-nav-menu">
+									<div class="landing-nav-center">
+										<a href="#landing-hero" class="landing-nav-link" data-scroll>Home</a>
+										<a href="#landing-features" class="landing-nav-link" data-scroll>Features</a>
+										<a href="#landing-explore" class="landing-nav-link auth-only" data-scroll>Explore Skills</a>
+										<a href="#" class="landing-nav-link user-only" data-page="offers">Explore Skills</a>
+										<a href="#landing-how" class="landing-nav-link" data-scroll>How It Works</a>
+									</div>
+									<div class="landing-nav-actions auth-only">
+										<button type="button" class="btn-nav-ghost" data-auth-modal="login">Login</button>
+										<button type="button" class="btn-nav-primary" data-auth-modal="register">Get Started</button>
+									</div>
+									<div class="landing-nav-actions user-only">
+										<button type="button" class="btn-nav-ghost" data-page="dashboard">Dashboard</button>
+										<div class="landing-nav-credits user-only" id="landing-nav-credits" title="Your credits">
+											<span aria-hidden="true">💎</span>
+											<span id="landing-nav-credits-amount">0</span>
+										</div>
+										<a href="#" class="landing-nav-avatar" id="landing-nav-avatar" data-page="profile" title="Profile" aria-label="Profile"></a>
+										<button type="button" class="btn-nav-logout logout-btn" aria-label="Logout">
+											<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+											<span>Logout</span>
+										</button>
+									</div>
 								</div>
 							</div>
 						</nav>
 
-						<section class="landing-hero">
-							<div class="landing-hero-content">
-								<div class="landing-badge">
-									<span class="landing-badge-dot"></span>
-									Credit-based skill marketplace
+						<section class="landing-hero" id="landing-hero">
+							<div class="landing-hero-bg" aria-hidden="true">
+								<div class="landing-orb landing-orb-1"></div>
+								<div class="landing-orb landing-orb-2"></div>
+								<div class="landing-orb landing-orb-3"></div>
+							</div>
+							<div class="landing-hero-grid">
+								<div class="landing-hero-copy reveal">
+									<div class="landing-badge">
+										<span class="landing-badge-dot"></span>
+										Premium skill marketplace
+									</div>
+									<h1>Learn Skills Directly From <span class="gradient-text">Real People</span></h1>
+									<p class="landing-hero-desc">Exchange knowledge, earn credits, and grow together. Teach what you master — learn what you need — in one polished platform.</p>
+									<div class="landing-hero-actions">
+										<button type="button" class="btn btn-primary btn-glow" data-auth-modal="register">Start Learning</button>
+										<button type="button" class="btn btn-secondary" data-auth-modal="register">Become a Teacher</button>
+									</div>
+									<div class="landing-hero-trust">
+										<div class="landing-trust-avatars">
+											<span>AK</span><span>MR</span><span>JL</span><span>+</span>
+										</div>
+										<p>Trusted by <strong>2,400+</strong> learners worldwide</p>
+									</div>
 								</div>
-								<h1>Teach what you know.<br /><span class="gradient-text">Learn what you need.</span></h1>
-								<p class="landing-hero-desc">
-									Exchange skills with a global community. Earn credits teaching, spend them learning — all in one premium platform built for modern learners.
-								</p>
-								<div class="landing-hero-actions">
-									<button class="btn btn-primary" data-page="register">Start for free</button>
-									<button class="btn btn-secondary" data-page="offers">Browse skills</button>
-								</div>
-								<div class="landing-hero-visual">
-									<div class="landing-mockup">
+								<div class="landing-hero-visual reveal reveal-delay-1">
+									<div class="landing-float-card landing-float-card-1">
+										<span class="landing-float-icon">📹</span>
+										<div><strong>Live lesson</strong><span>Video session starting</span></div>
+									</div>
+									<div class="landing-float-card landing-float-card-2">
+										<span class="landing-float-icon">💎</span>
+										<div><strong>+25 credits</strong><span>Teaching reward</span></div>
+									</div>
+									<div class="landing-mockup glass-panel">
 										<div class="landing-mockup-bar">
 											<span class="landing-mockup-dot"></span>
 											<span class="landing-mockup-dot"></span>
@@ -166,11 +211,14 @@
 												<div class="landing-mock-nav-item active"></div>
 												<div class="landing-mock-nav-item"></div>
 												<div class="landing-mock-nav-item"></div>
-												<div class="landing-mock-nav-item"></div>
 											</div>
 											<div class="landing-mock-main">
 												<div class="landing-mock-card hero-bar"></div>
-												<div class="landing-mock-card"></div>
+												<div class="landing-mock-stats">
+													<div class="landing-mock-stat"></div>
+													<div class="landing-mock-stat"></div>
+													<div class="landing-mock-stat"></div>
+												</div>
 												<div class="landing-mock-card"></div>
 											</div>
 										</div>
@@ -179,74 +227,116 @@
 							</div>
 						</section>
 
-						<div class="landing-stats">
-							<div class="landing-stat animate-in">
-								<strong>2,400+</strong>
-								<span>Active learners</span>
+						<section class="landing-stats" id="landing-stats" aria-label="Platform statistics">
+							<div class="landing-stat glass-panel reveal">
+								<strong data-count="420" data-suffix="+">0</strong>
+								<span>Active Teachers</span>
 							</div>
-							<div class="landing-stat animate-in animate-in-delay-1">
-								<strong>850+</strong>
-								<span>Skills offered</span>
+							<div class="landing-stat glass-panel reveal reveal-delay-1">
+								<strong data-count="850" data-suffix="+">0</strong>
+								<span>Skills Available</span>
 							</div>
-							<div class="landing-stat animate-in animate-in-delay-2">
-								<strong>12k+</strong>
-								<span>Sessions completed</span>
+							<div class="landing-stat glass-panel reveal reveal-delay-2">
+								<strong data-count="12000" data-suffix="+">0</strong>
+								<span>Lessons Completed</span>
 							</div>
-							<div class="landing-stat animate-in animate-in-delay-3">
-								<strong>4.9</strong>
-								<span>Average rating</span>
+							<div class="landing-stat glass-panel reveal reveal-delay-3">
+								<strong data-count="2400" data-suffix="+">0</strong>
+								<span>Community Members</span>
 							</div>
-						</div>
+						</section>
 
-						<section class="landing-section">
-							<div class="landing-section-head">
-								<p class="landing-section-eyebrow">How it works</p>
-								<h2>Everything you need to grow</h2>
-								<p>A seamless flow from discovery to live video sessions — designed like the tools you already love.</p>
+						<section class="landing-section" id="landing-features">
+							<div class="landing-section-head reveal">
+								<p class="landing-section-eyebrow">Features</p>
+								<h2>Built for modern skill exchange</h2>
+								<p>Everything you need to teach, learn, and connect — designed with the same polish as your dashboard.</p>
 							</div>
 							<div class="landing-features">
-								<div class="landing-feature-card">
-									<div class="landing-feature-icon">✨</div>
-									<h3>Post your expertise</h3>
-									<p>Create premium teaching offers, set your credits, and define structured lesson paths.</p>
+								<article class="landing-feature-card reveal">
+									<div class="landing-feature-icon" aria-hidden="true">📹</div>
+									<h3>Live Lessons</h3>
+									<p>Integrated video sessions with teachers and learners, right inside the platform.</p>
+								</article>
+								<article class="landing-feature-card reveal reveal-delay-1">
+									<div class="landing-feature-icon" aria-hidden="true">🛒</div>
+									<h3>Skill Marketplace</h3>
+									<p>Browse premium offers from real experts — not generic pre-recorded courses.</p>
+								</article>
+								<article class="landing-feature-card reveal reveal-delay-2">
+									<div class="landing-feature-icon" aria-hidden="true">💎</div>
+									<h3>Credit System</h3>
+									<p>Teach to earn credits, spend them to learn. Fair exchange, zero friction.</p>
+								</article>
+								<article class="landing-feature-card reveal">
+									<div class="landing-feature-icon" aria-hidden="true">💬</div>
+									<h3>Messaging</h3>
+									<p>Discord-quality chat to coordinate lessons and stay connected.</p>
+								</article>
+								<article class="landing-feature-card reveal reveal-delay-1">
+									<div class="landing-feature-icon" aria-hidden="true">📅</div>
+									<h3>Scheduling</h3>
+									<p>Track upcoming sessions, progress, and goals from your dashboard.</p>
+								</article>
+								<article class="landing-feature-card reveal reveal-delay-2">
+									<div class="landing-feature-icon" aria-hidden="true">🌐</div>
+									<h3>Community Learning</h3>
+									<p>Join a growing network of passionate teachers and curious learners.</p>
+								</article>
+							</div>
+						</section>
+
+						<section class="landing-section landing-how" id="landing-how">
+							<div class="landing-section-head reveal">
+								<p class="landing-section-eyebrow">How it works</p>
+								<h2>Start in three simple steps</h2>
+								<p>From discovery to your first live lesson — a flow as smooth as the best SaaS products.</p>
+							</div>
+							<div class="landing-steps">
+								<div class="landing-step reveal">
+									<div class="landing-step-num">1</div>
+									<div class="landing-step-icon">🔍</div>
+									<h3>Find a Skill</h3>
+									<p>Explore the marketplace and discover teachers who match your goals.</p>
 								</div>
-								<div class="landing-feature-card">
-									<div class="landing-feature-icon">🔍</div>
-									<h3>Discover skills</h3>
-									<p>Browse a curated marketplace of skills from real people — not generic courses.</p>
+								<div class="landing-step-connector" aria-hidden="true"></div>
+								<div class="landing-step reveal reveal-delay-1">
+									<div class="landing-step-num">2</div>
+									<div class="landing-step-icon">📅</div>
+									<h3>Book Lessons</h3>
+									<p>Enroll with credits, message your teacher, and schedule live sessions.</p>
 								</div>
-								<div class="landing-feature-card">
-									<div class="landing-feature-icon">📹</div>
-									<h3>Learn live</h3>
-									<p>Book sessions, message your teacher, and join integrated video calls seamlessly.</p>
-								</div>
-								<div class="landing-feature-card">
-									<div class="landing-feature-icon">💎</div>
-									<h3>Earn credits</h3>
-									<p>Teach to earn, learn to grow. Your credits unlock new skills across the platform.</p>
-								</div>
-								<div class="landing-feature-card">
-									<div class="landing-feature-icon">📅</div>
-									<h3>Stay organized</h3>
-									<p>Track progress, upcoming sessions, and goals from your personal dashboard.</p>
-								</div>
-								<div class="landing-feature-card">
-									<div class="landing-feature-icon">💬</div>
-									<h3>Message instantly</h3>
-									<p>Discord-quality chat built in — stay connected with teachers and learners.</p>
+								<div class="landing-step-connector" aria-hidden="true"></div>
+								<div class="landing-step reveal reveal-delay-2">
+									<div class="landing-step-num">3</div>
+									<div class="landing-step-icon">🚀</div>
+									<h3>Earn &amp; Learn</h3>
+									<p>Complete lessons, earn credits teaching, and keep growing your skills.</p>
 								</div>
 							</div>
 						</section>
 
-						<section class="landing-section">
-							<div class="landing-section-head">
+						<section class="landing-section" id="landing-explore">
+							<div class="landing-explore-banner glass-panel reveal">
+								<div>
+									<h2>Explore the skill marketplace</h2>
+									<p>Discover hundreds of skills — from code to design, languages to music.</p>
+								</div>
+								<button type="button" class="btn btn-primary auth-only" data-auth-modal="register">Join to explore</button>
+								<button type="button" class="btn btn-primary user-only" data-page="offers">Browse offers</button>
+							</div>
+						</section>
+
+						<section class="landing-section" id="landing-testimonials">
+							<div class="landing-section-head reveal">
 								<p class="landing-section-eyebrow">Testimonials</p>
-								<h2>Loved by learners worldwide</h2>
-								<p>Join thousands who've transformed how they learn and teach.</p>
+								<h2>Loved by our community</h2>
+								<p>Real stories from learners and teachers on Skills Exchange.</p>
 							</div>
 							<div class="landing-testimonials">
-								<div class="landing-testimonial">
-									<p>"The dashboard feels like Linear — clean, fast, and actually enjoyable to use every day."</p>
+								<article class="landing-testimonial glass-panel reveal">
+									<div class="landing-stars" aria-label="5 stars">★★★★★</div>
+									<p>"Feels like a funded startup product — clean dashboard, smooth messaging, and fair credits."</p>
 									<div class="landing-testimonial-author">
 										<div class="landing-testimonial-avatar">SK</div>
 										<div>
@@ -254,19 +344,21 @@
 											<div class="landing-testimonial-role">Python learner</div>
 										</div>
 									</div>
-								</div>
-								<div class="landing-testimonial">
-									<p>"I earn credits teaching design and spend them on Spanish. It's the fairest exchange I've found."</p>
+								</article>
+								<article class="landing-testimonial glass-panel reveal reveal-delay-1">
+									<div class="landing-stars" aria-label="5 stars">★★★★★</div>
+									<p>"I teach UI design and learn Spanish with the same credits. Best exchange model I've used."</p>
 									<div class="landing-testimonial-author">
 										<div class="landing-testimonial-avatar">MR</div>
 										<div>
 											<div class="landing-testimonial-name">Marcus R.</div>
-											<div class="landing-testimonial-role">UI/UX teacher</div>
+											<div class="landing-testimonial-role">Design teacher</div>
 										</div>
 									</div>
-								</div>
-								<div class="landing-testimonial">
-									<p>"Video sessions, messaging, and scheduling in one place. No more juggling five different apps."</p>
+								</article>
+								<article class="landing-testimonial glass-panel reveal reveal-delay-2">
+									<div class="landing-stars" aria-label="5 stars">★★★★★</div>
+									<p>"Video, chat, and scheduling in one place. No more juggling five different apps."</p>
 									<div class="landing-testimonial-author">
 										<div class="landing-testimonial-avatar">AL</div>
 										<div>
@@ -274,23 +366,55 @@
 											<div class="landing-testimonial-role">Full-stack student</div>
 										</div>
 									</div>
-								</div>
+								</article>
 							</div>
 						</section>
 
-						<section class="landing-cta-dark">
+						<section class="landing-cta-dark reveal">
 							<h2>Ready to exchange skills?</h2>
-							<p>Join free today and start teaching or learning within minutes.</p>
-							<button class="btn btn-primary" data-page="register">Create your account</button>
+							<p>Join free today. Start learning — or teaching — in minutes.</p>
+							<div class="landing-cta-actions">
+								<button type="button" class="btn btn-primary btn-glow" data-auth-modal="register">Create free account</button>
+								<button type="button" class="btn btn-secondary landing-cta-ghost" data-auth-modal="login">Sign in</button>
+							</div>
 						</section>
 
 						<footer class="landing-footer">
-							<div class="landing-footer-links">
-								<a href="#" data-page="home">Home</a>
-								<a href="#" data-page="offers">Offers</a>
-								<a href="#" data-page="register">Register</a>
+							<div class="landing-footer-grid">
+								<div class="landing-footer-brand">
+									<a href="#" data-page="home" class="landing-logo">
+										<span class="landing-logo-icon">SE</span>
+										<span class="landing-logo-text">Skills Exchange</span>
+									</a>
+									<p>Exchange skills. Earn credits. Grow together.</p>
+									<div class="landing-social">
+										<a href="#" aria-label="Twitter">𝕏</a>
+										<a href="#" aria-label="LinkedIn">in</a>
+										<a href="#" aria-label="GitHub">⌘</a>
+									</div>
+								</div>
+								<div class="landing-footer-col">
+									<h4>Product</h4>
+									<a href="#landing-features" data-scroll>Features</a>
+									<a href="#landing-how" data-scroll>How it works</a>
+									<a href="#" data-page="offers" class="user-only">Marketplace</a>
+								</div>
+								<div class="landing-footer-col">
+									<h4>Account</h4>
+									<a href="#" data-auth-modal="login" class="auth-only">Login</a>
+									<a href="#" data-auth-modal="register" class="auth-only">Register</a>
+									<a href="#" data-page="dashboard" class="user-only">Dashboard</a>
+								</div>
+								<div class="landing-footer-col">
+									<h4>Contact</h4>
+									<a href="mailto:hello@skillsexchange.com">hello@skillsexchange.com</a>
+									<a href="#">Support</a>
+									<a href="#">Privacy</a>
+								</div>
 							</div>
-							<p>&copy; 2026 Skills Exchange. All rights reserved.</p>
+							<div class="landing-footer-bottom">
+								<p>&copy; 2026 Skills Exchange. All rights reserved.</p>
+							</div>
 						</footer>
 					</div>
 				</section>
@@ -486,67 +610,75 @@
 					</div>
 				</div>
 
-				<section id="page-login" class="page page-auth">
-					<div class="auth-split">
-						<div class="auth-split-brand">
-							<h2>Welcome back</h2>
-							<p>Sign in to access your dashboard, messages, teaching offers, and credits wallet.</p>
-						</div>
-						<div class="auth-split-form">
-							<h2>Login</h2>
-							<form id="login-form">
-								<div class="form-group">
-									<label>Username</label>
-									<input type="text" name="username" required placeholder="Enter your username" />
-								</div>
-								<div class="form-group">
-									<label>Password</label>
-									<input type="password" name="password" required placeholder="Enter your password" />
-								</div>
-								<button type="submit" class="btn btn-primary btn-block">Sign in</button>
-							</form>
-							<p class="auth-switch">
-								Don't have an account?
-								<a href="#" data-page="register">Create one</a>
-							</p>
+				<!-- Login modal -->
+				<div id="auth-login-modal" class="modal-overlay auth-modal-overlay" style="display: none" role="dialog" aria-modal="true" aria-labelledby="auth-login-title">
+					<div class="modal-content auth-modal-content">
+						<button type="button" class="modal-close auth-modal-close" data-auth-close aria-label="Close">&times;</button>
+						<div class="auth-split">
+							<div class="auth-split-brand">
+								<h2 id="auth-login-title">Welcome back</h2>
+								<p>Sign in to access your dashboard, messages, teaching offers, and credits wallet.</p>
+							</div>
+							<div class="auth-split-form">
+								<h2>Login</h2>
+								<form id="login-form">
+									<div class="form-group">
+										<label>Username</label>
+										<input type="text" name="username" required placeholder="Enter your username" autocomplete="username" />
+									</div>
+									<div class="form-group">
+										<label>Password</label>
+										<input type="password" name="password" required placeholder="Enter your password" autocomplete="current-password" />
+									</div>
+									<button type="submit" class="btn btn-primary btn-block">Sign in</button>
+								</form>
+								<p class="auth-switch">
+									Don't have an account?
+									<a href="#" data-auth-modal="register">Create one</a>
+								</p>
+							</div>
 						</div>
 					</div>
-				</section>
+				</div>
 
-				<section id="page-register" class="page page-auth">
-					<div class="auth-split">
-						<div class="auth-split-brand">
-							<h2>Join the community</h2>
-							<p>Start teaching, learning, and earning credits on a platform designed for real skill exchange.</p>
-						</div>
-						<div class="auth-split-form">
-							<h2>Create account</h2>
-							<form id="register-form">
-								<div class="form-group">
-									<label>Username</label>
-									<input type="text" name="username" required placeholder="Choose a username" />
-								</div>
-								<div class="form-group">
-									<label>Email</label>
-									<input type="email" name="email" required placeholder="you@example.com" />
-								</div>
-								<div class="form-group">
-									<label>Password</label>
-									<input type="password" name="password" required placeholder="Create a password" />
-								</div>
-								<div class="form-group">
-									<label>Full Name</label>
-									<input type="text" name="full_name" placeholder="Your display name" />
-								</div>
-								<button type="submit" class="btn btn-primary btn-block">Get started</button>
-							</form>
-							<p class="auth-switch">
-								Already have an account?
-								<a href="#" data-page="login">Sign in</a>
-							</p>
+				<!-- Register modal -->
+				<div id="auth-register-modal" class="modal-overlay auth-modal-overlay" style="display: none" role="dialog" aria-modal="true" aria-labelledby="auth-register-title">
+					<div class="modal-content auth-modal-content">
+						<button type="button" class="modal-close auth-modal-close" data-auth-close aria-label="Close">&times;</button>
+						<div class="auth-split">
+							<div class="auth-split-brand">
+								<h2 id="auth-register-title">Join the community</h2>
+								<p>Start teaching, learning, and earning credits on a platform designed for real skill exchange.</p>
+							</div>
+							<div class="auth-split-form">
+								<h2>Create account</h2>
+								<form id="register-form">
+									<div class="form-group">
+										<label>Username</label>
+										<input type="text" name="username" required placeholder="Choose a username" autocomplete="username" />
+									</div>
+									<div class="form-group">
+										<label>Email</label>
+										<input type="email" name="email" required placeholder="you@example.com" autocomplete="email" />
+									</div>
+									<div class="form-group">
+										<label>Password</label>
+										<input type="password" name="password" required placeholder="Create a password" autocomplete="new-password" />
+									</div>
+									<div class="form-group">
+										<label>Full Name</label>
+										<input type="text" name="full_name" placeholder="Your display name" autocomplete="name" />
+									</div>
+									<button type="submit" class="btn btn-primary btn-block">Get started</button>
+								</form>
+								<p class="auth-switch">
+									Already have an account?
+									<a href="#" data-auth-modal="login">Sign in</a>
+								</p>
+							</div>
 						</div>
 					</div>
-				</section>
+				</div>
 
 				<section id="page-offers" class="page page-app dash-page">
 					<div class="dash-app" data-app-shell="offers">
@@ -1214,8 +1346,9 @@
 
 		<script src="js/api.js?v=3"></script>
 		<script src="js/dashboard.js?v=1"></script>
-		<script src="js/shell.js?v=1"></script>
-		<script src="js/app.js?v=5"></script>
+		<script src="js/landing.js?v=1"></script>
+		<script src="js/shell.js?v=3"></script>
+		<script src="js/app.js?v=10"></script>
 		<script src="js/messages.js?v=8"></script>
 		<script src="js/video.js"></script>
 	</body>

@@ -72,6 +72,7 @@ const AppShell = {
             this.bindApp(app);
         });
         this.syncAllProfiles();
+        this.syncTopbarAuth();
     },
 
     bindApp(app) {
@@ -81,8 +82,56 @@ const AppShell = {
         const overlay = app.querySelector('.app-shell-overlay');
         toggle?.addEventListener('click', () => app.classList.toggle('sidebar-open'));
         overlay?.addEventListener('click', () => app.classList.remove('sidebar-open'));
-        app.querySelectorAll('.dash-nav-link[data-page]').forEach((link) => {
+        app.querySelectorAll('.dash-nav-link[data-page], .dash-upgrade-btn[data-page]').forEach((link) => {
             link.addEventListener('click', () => app.classList.remove('sidebar-open'));
+        });
+    },
+
+    topbarAuthHtml() {
+        return `
+        <div class="dash-topbar-auth" data-topbar-auth>
+            <div class="dash-topbar-credits" title="Credits">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <span class="dash-topbar-credits-amt">0</span>
+            </div>
+            <a href="#" class="dash-topbar-avatar" data-page="profile" aria-label="Profile"></a>
+            <button type="button" class="btn-nav-logout logout-btn dash-topbar-logout" aria-label="Logout">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                <span>Logout</span>
+            </button>
+        </div>`;
+    },
+
+    syncTopbarAuth() {
+        const user = typeof getUser === 'function' ? getUser() : null;
+        document.querySelectorAll('.dash-topbar-actions').forEach((actions) => {
+            if (!actions.querySelector('[data-topbar-auth]')) {
+                actions.insertAdjacentHTML('beforeend', this.topbarAuthHtml());
+            }
+        });
+        if (!user) {
+            document.querySelectorAll('[data-topbar-auth]').forEach((el) => {
+                el.style.display = 'none';
+            });
+            return;
+        }
+        const name = user.full_name || user.username || 'User';
+        const initials = typeof DashboardUI !== 'undefined'
+            ? DashboardUI.initials(name)
+            : name.substring(0, 2).toUpperCase();
+        const color = typeof DashboardUI !== 'undefined'
+            ? DashboardUI.avatarColor(user.id)
+            : '#4f46e5';
+        const credits = user.credits ?? 0;
+        document.querySelectorAll('[data-topbar-auth]').forEach((el) => {
+            el.style.display = 'flex';
+        });
+        document.querySelectorAll('.dash-topbar-credits-amt').forEach((el) => {
+            el.textContent = credits;
+        });
+        document.querySelectorAll('.dash-topbar-avatar').forEach((el) => {
+            el.textContent = initials;
+            el.style.background = color;
         });
     },
 
@@ -90,6 +139,7 @@ const AppShell = {
         this.init();
         this.setActiveNav(page);
         this.syncAllProfiles();
+        this.syncTopbarAuth();
         document.querySelectorAll('[data-app-shell]').forEach((app) => {
             app.classList.remove('sidebar-open');
         });

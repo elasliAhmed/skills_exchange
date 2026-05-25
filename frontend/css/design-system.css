@@ -43,21 +43,155 @@ body.app-mode {
     background: #0f172a;
 }
 
-body.page-auth-active .header,
-body:has(#page-login.active) .header,
-body:has(#page-register.active) .header {
+body.app-mode .dash-main {
+    min-height: 0;
+}
+
+body.app-mode .dash-scroll {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* ── Auth nav visibility (guest vs logged in) ── */
+.auth-only {
+    display: inline-flex;
+}
+
+.user-only {
+    display: none !important;
+}
+
+body.logged-in .auth-only {
+    display: none !important;
+}
+
+body.logged-in .user-only {
+    display: inline-flex !important;
+}
+
+body.logged-in .landing-nav-actions.user-only {
+    display: flex !important;
+}
+
+body.logged-in .landing-nav-avatar {
+    display: flex !important;
+}
+
+body.logged-in .landing-nav-credits {
+    display: inline-flex !important;
+}
+
+body.logged-in #header-credits {
+    display: flex !important;
+}
+
+body.logged-in .header .nav .user-only {
+    display: inline-flex !important;
+}
+
+body.logged-in .header .nav a.user-only {
+    display: inline-block !important;
+}
+
+body.logged-in .nav .btn-nav-logout,
+body.logged-in .header .btn-nav-logout {
+    display: inline-flex !important;
+}
+
+/* Logged-in homepage: use global header only (avoid duplicate navbars) */
+body.logged-in.home-mode .header {
+    display: flex !important;
+}
+
+body.logged-in.home-mode .landing-nav {
     display: none;
 }
 
-body:has(#page-login.active) .main-content,
-body:has(#page-register.active) .main-content {
-    padding-top: 0;
+body.logged-in.home-mode .landing-hero {
+    padding-top: 5.5rem;
 }
+
+/* Dashboard / app topbar — credits, avatar, logout */
+.dash-topbar-auth {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: 0.25rem;
+}
+
+.dash-topbar-credits {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: #4f46e5;
+    background: rgba(79, 70, 229, 0.08);
+    border: 1px solid rgba(129, 140, 248, 0.2);
+    border-radius: 999px;
+}
+
+.dash-topbar-credits svg {
+    flex-shrink: 0;
+    color: #7c3aed;
+}
+
+.dash-topbar-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.8125rem;
+    color: #fff;
+    text-decoration: none;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border: 2px solid #fff;
+    box-shadow: 0 2px 10px rgba(79, 70, 229, 0.25);
+    transition: transform 0.2s ease;
+}
+
+.dash-topbar-avatar:hover {
+    transform: scale(1.05);
+}
+
+.dash-topbar-logout {
+    padding: 0.45rem 0.875rem;
+    font-size: 0.8125rem;
+}
+
+.dash-topbar-logout svg {
+    stroke: currentColor;
+    flex-shrink: 0;
+}
+
+.dash-icon-btn svg {
+    stroke: currentColor;
+    color: inherit;
+}
+
+.header .nav {
+    align-items: center;
+}
+
+.header .nav .btn-nav-logout {
+    margin-left: 0.25rem;
+    vertical-align: middle;
+}
+
 
 .page.page-app.active {
     display: block !important;
     height: 100vh;
     height: 100dvh;
+}
+
+/* Let injected sidebar participate in dash-app grid */
+.app-shell-sidebar-slot {
+    display: contents;
 }
 
 /* Premium buttons */
