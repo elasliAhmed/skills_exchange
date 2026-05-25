@@ -13,9 +13,11 @@ function showPage(page) {
 	document.getElementById(`page-${page}`).classList.add("active");
 
 	document.body.classList.toggle("dash-mode", page === "dashboard");
-	if (page === "dashboard" && typeof DashboardUI !== "undefined") {
-		DashboardUI.setActiveNav("dashboard");
-		DashboardUI.syncProfileSidebar();
+	if (typeof DashboardUI !== "undefined") {
+		DashboardUI.setActiveNav(page);
+		if (page === "dashboard") {
+			DashboardUI.syncProfileSidebar();
+		}
 	}
 
 	updateNav();
@@ -179,6 +181,44 @@ function setupEventListeners() {
 	// ── Student Lesson Details Modal ──
 	document.getElementById("sl-close")?.addEventListener("click", closeStudentLessonsModal);
 	document.getElementById("sl-close-btn")?.addEventListener("click", closeStudentLessonsModal);
+
+	// ── Filter Panel Toggle ──
+	const filterToggle = document.getElementById('offers-filter-toggle');
+	const filterPanel = document.getElementById('offers-filter-panel');
+	const filterClose = document.getElementById('offers-filter-close');
+	const pageOffers = document.getElementById('page-offers');
+
+	const toggleFilterPanel = () => {
+		if (filterPanel) {
+			filterPanel.classList.toggle('active');
+			if (pageOffers) pageOffers.classList.toggle('offers-filters-open');
+		};
+	};
+
+	const closeFilterPanel = () => {
+		if (filterPanel) {
+			filterPanel.classList.remove('active');
+			if (pageOffers) pageOffers.classList.remove('offers-filters-open');
+		};
+	};
+
+	filterToggle?.addEventListener('click', (e) => {
+		e.stopPropagation();
+		toggleFilterPanel();
+	});
+
+	filterClose?.addEventListener('click', closeFilterPanel);
+
+	// Close on outside click
+	document.addEventListener('click', (e) => {
+		if (filterPanel && filterPanel.classList.contains('active')) {
+			const isInPanel = filterPanel.contains(e.target);
+			const isToggleButton = filterToggle?.contains(e.target);
+			if (!isInPanel && !isToggleButton) {
+				closeFilterPanel();
+			};
+		};
+	});
 
 	// Dashboard tab switching
 	document.querySelectorAll(".tab-btn").forEach((btn) => {
@@ -838,16 +878,32 @@ function closeLearnersModal() {
 	document.getElementById('learners-modal').style.display = 'none';
 }
 
-async function loadSkills() {
-	// skills table was removed; users enter skill names directly on create/edit forms
-	console.debug('[loadSkills] stubbed — no skills catalogue');
-}
+function setupOfferFilterButtons() {
+    // Level buttons - toggle active state
+    document.querySelectorAll('.offers-level-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.offers-level-btn').forEach(b => b.classList.remove('active'));
+            this.classList.toggle('active');
+        });
+    });
 
-// skills table removed — users type skill names directly into offer forms
-function renderSkills(skills, containerId) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-    container.innerHTML = "<p>Skill catalogue removed.</p>";
+    // Lesson count buttons - toggle active state
+    document.querySelectorAll('.offers-lesson-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.offers-lesson-btn').forEach(b => b.classList.remove('active'));
+            this.classList.toggle('active');
+        });
+    });
+
+    // Horizontal filter level select
+    const dashLevelFilter = document.getElementById('dash-level-filter');
+    dashLevelFilter?.addEventListener('change', function() {
+        const level = this.value;
+        document.querySelectorAll('.offers-level-btn').forEach(b => b.classList.remove('active'));
+        if (level) {
+            document.querySelectorAll('.offers-level-btn[data-level="' + level + '"]').forEach(b => b.classList.add('active'));
+        }
+    });
 }
 
 async function loadOffersPage() {
@@ -855,6 +911,7 @@ async function loadOffersPage() {
 		loadMyOffers(),
 		loadAllOffers(),
 	]);
+	setupOfferFilterButtons();
 }
 
 async function loadMyOffers() {
@@ -874,41 +931,6 @@ async function loadAllOffers() {
 function updateOffersCount(count) {
 	const countEl = document.getElementById('offers-count');
 	if (countEl) countEl.textContent = count;
-}
-
-async function loadSkills() {
-	// skills table was removed; users enter skill names directly on create/edit forms
-	console.debug('[loadSkills] stubbed — no skills catalogue');
-}
-
-// skills table removed — users type skill names directly into offer forms
-function renderSkills(skills, containerId) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-    container.innerHTML = "<p>Skill catalogue removed.</p>";
-}
-
-async function loadOffersPage() {
-	await Promise.all([
-		loadMyOffers(),
-		loadAllOffers(),
-	]);
-}
-
-async function loadMyOffers() {
-	const result = await apiInstance.getMyTeachingOffers();
-	if (result.success) {
-		renderMyOffers(result.data.offers);
-	} else {
-		document.getElementById("my-offers-list").innerHTML = "";
-	}
-}
-
-async function loadAllOffers() {
-	const result = await apiInstance.getTeachingOffers();
-	if (result.success) {
-		renderTeachingOffers(result.data.offers);
-	}
 }
 
 function renderMyOffers(offers) {
@@ -1085,3 +1107,42 @@ async function handleAddOffer(e) {
 		alert('An unexpected error occurred: ' + err.message);
 	}
 }
+
+// ── Offer Filtering ──
+function applyOfferFilters() {
+	const cards = document.querySelectorAll('.offer-card');
+	const levelFilter = document.querySelector('.offers-level-btn.active')?.dataset.level;
+	const creditsMin = parseInt(document.getElementById('panel-credits-min')?.value) || 0;
+	const creditsMax = parseInt(document.getElementById('panel-credits-max')?.value) || Infinity;
+
+	cards.forEach(card => {
+		const cardLevel = card.querySelector('.offer-level-badge')?.textContent?.toLowerCase();
+		const priceText = card.querySelector('.offer-price')?.textContent;
+		const credits = parseInt(priceText) || 0;
+		const levelMatch = !levelFilter || cardLevel?.includes(levelFilter);
+		const creditsMatch = credits >= creditsMin && credits <= creditsMax;
+
+		card.style.display = levelMatch && creditsMatch ? '' : 'none';
+	});
+
+	const count = Array.from(cards).filter(c => c.style.display !== 'none').length;
+	updateOffersCount(count);
+}
+
+function clearOfferFilters() {
+	document.querySelectorAll('.offers-level-btn').forEach(btn => btn.classList.remove('active'));
+	document.querySelectorAll('.offers-lesson-btn').forEach(btn => btn.classList.remove('active'));
+	document.getElementById('panel-credits-min') && (document.getElementById('panel-credits-min').value = '');
+	document.getElementById('panel-credits-max') && (document.getElementById('panel-credits-max').value = '');
+
+	const cards = document.querySelectorAll('.offer-card');
+	cards.forEach(card => card.style.display = '');
+
+	const result = document.getElementById('teaching-offers-grid')?.querySelectorAll('.offer-card');
+	updateOffersCount(result?.length || 0);
+}
+
+// Filter button event handlers
+document.getElementById('panel-apply-filters')?.addEventListener('click', applyOfferFilters);
+document.getElementById('panel-clear-filters')?.addEventListener('click', clearOfferFilters);
+document.getElementById('dash-clear-filters')?.addEventListener('click', clearOfferFilters);

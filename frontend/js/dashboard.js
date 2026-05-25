@@ -51,9 +51,9 @@ const DashboardUI = {
         const user = typeof getUser === 'function' ? getUser() : null;
         if (!user) return;
         const name = user.full_name || user.username || 'User';
-        const elName = document.getElementById('dash-sidebar-name');
-        const elCredits = document.getElementById('dash-sidebar-credits');
-        const elAvatar = document.getElementById('dash-sidebar-avatar');
+        const elName = document.getElementById('global-sidebar-name');
+        const elCredits = document.getElementById('global-sidebar-credits');
+        const elAvatar = document.getElementById('global-sidebar-avatar');
         if (elName) elName.textContent = name;
         if (elCredits) elCredits.textContent = user.credits ?? 0;
         if (elAvatar) {

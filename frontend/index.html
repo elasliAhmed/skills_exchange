@@ -21,132 +21,165 @@
 		<link rel="stylesheet" href="css/offers.css" />
 	</head>
 	<body>
-<div id="app">
-			<header class="header">
-				<div class="container">
-					<a href="#" data-page="home" class="logo">Skills Exchange</a>
-					<nav class="nav" id="nav">
-						<a href="#" data-page="home">Home</a>
-						<a href="#" data-page="offers" class="user-only">Teaching Offers</a>
-						<a href="#" data-page="login" class="auth-only">Login</a>
-						<a href="#" data-page="register" class="auth-only">Register</a>
-						<a href="#" data-page="dashboard" class="user-only">Dashboard</a>
-						<a href="#" data-page="messages" class="user-only nav-messages">Messages<span id="messages-unread-badge" class="nav-unread-badge" style="display: none"></span></a>
-						<a href="#" data-page="profile" class="user-only">Profile</a>
-						<a href="#" id="logout" class="user-only">Logout</a>
-					</nav>
-					<div id="header-credits" class="header-credits user-only" style="display: none">
-						<svg width="18" height="18" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="flex-shrink: 0">
-							<g transform="translate(100, 100)">
-								<ellipse cx="0" cy="0" rx="80" ry="80" fill="#7c3aed"/>
-								<ellipse cx="0" cy="0" rx="80" ry="80" fill="none" stroke="#6d28d9" stroke-width="5"/>
-								<ellipse cx="0" cy="0" rx="68" ry="68" fill="#8b5cf6"/>
-								<ellipse cx="-20" cy="-30" rx="16" ry="8" fill="#c4b5fd" opacity="0.5" transform="rotate(-35)"/>
-								<text x="0" y="6" fill="#f5f3ff" font-family="Georgia, serif" font-weight="700" font-size="56" text-anchor="middle" dominant-baseline="central">C</text>
-							</g>
-						</svg>
-						<span id="header-credits-amount">0</span>
-					</div>
+	<div id="app">
+		<div class="dash-app" id="dash-app">
+			<div class="dash-sidebar-overlay" id="dash-sidebar-overlay"></div>
+
+			<aside class="dash-sidebar" id="global-sidebar">
+				<div class="dash-sidebar-brand">
+					<div class="dash-brand-icon">SE</div>
+					<span class="dash-brand-text">Skills Exchange</span>
 				</div>
-			</header>
-
-			<main class="main-content">
-				<!-- Page: Home -->
-				<section id="page-home" class="page active">
-					<!-- Hero section -->
-					<div class="hero">
-						<h2>Skills Exchange</h2>
-						<p>
-							Exchange skills with others using our credit-based
-							platform. Teach what you know, learn what you don't.
-						</p>
-						<div class="hero-buttons">
-							<button
-								class="btn btn-secondary"
-								data-page="offers"
-							>
-								Browse Offers
-							</button>
-							<button
-								class="btn btn-primary"
-								data-page="register"
-							>
-								Get Started
-							</button>
+				<nav class="dash-nav" aria-label="Main">
+					<a href="#" class="dash-nav-link" data-page="dashboard">
+						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+						Dashboard
+					</a>
+					<a href="#" class="dash-nav-link" data-page="offers">
+						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+						Teaching Offers
+					</a>
+					<a href="#" class="dash-nav-link" data-page="messages">
+						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+						Messages
+					</a>
+					<a href="#" class="dash-nav-link" data-page="profile">
+						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+						Settings
+					</a>
+				</nav>
+				<div class="dash-sidebar-foot">
+					<div class="dash-profile-mini">
+						<div class="dash-profile-avatar" id="global-sidebar-avatar">?</div>
+						<div class="dash-profile-info">
+							<div class="dash-profile-name" id="global-sidebar-name">User</div>
+							<div class="dash-profile-credits"><span id="global-sidebar-credits">0</span> credits</div>
 						</div>
 					</div>
+					<button type="button" class="dash-upgrade-btn" data-page="offers">Explore Skills</button>
+				</div>
+			</aside>
 
-					<!-- How it works section -->
-					<div class="container">
-						<h2 class="section-heading">How it works</h2>
-						<div class="features">
-							<div class="feature-card">
-								<h3>Post a Skill</h3>
-								<p>
-									Share what you know and set your
-									availability
-								</p>
-							</div>
-							<div class="feature-card">
-								<h3>Find a Skill</h3>
-								<p>
-									Browse skills offered by others in the
-									community
-								</p>
-							</div>
-							<div class="feature-card">
-								<h3>Book a Session</h3>
-								<p>Schedule a video call using your credits</p>
-							</div>
-						</div>
+			<div class="dash-main">
+				<button type="button" class="dash-menu-toggle" id="dash-menu-toggle" aria-label="Menu">
+					<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+				</button>
 
-						<!-- Why us section -->
-						<h2 class="section-heading">Why us</h2>
-						<div class="features">
-							<div class="feature-card">
-								<h3>Learn from real people</h3>
-								<p>
-									Connect directly with experts and
-									enthusiasts
-								</p>
-							</div>
-							<div class="feature-card">
-								<h3>Teach what you know</h3>
-								<p>Share your skills and earn credits</p>
-							</div>
-							<div class="feature-card">
-								<h3>Schedule video sessions</h3>
-								<p>
-									Meet face-to-face through our integrated
-									video calls
-								</p>
-							</div>
-							<div class="feature-card">
-								<h3>Free to join</h3>
-								<p>Get started without any upfront cost</p>
-							</div>
-						</div>
+				<div class="dash-topbar">
+					<div class="dash-search-wrap">
+						<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+						<input type="text" class="dash-search" placeholder="Search...">
 					</div>
-
-					<!-- Final call to action -->
-					<div class="hero" style="margin-top: 60px">
-						<p>Ready to start learning or teaching?</p>
-						<button class="btn btn-primary" data-page="register">
-							Join Now
+					<div class="dash-topbar-actions">
+						<button class="dash-icon-btn" aria-label="Notifications">
+							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+							<span class="dash-badge-dot"></span>
+						</button>
+						<button class="dash-quick-btn">
+							<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" x2="16"/><line x1="12" y1="12" x2="16" y2="12"/></svg>
+							<span>New Session</span>
 						</button>
 					</div>
+				</div>
 
-					<!-- Footer -->
-					<footer
-						style="
-							text-align: center;
-							padding: 40px 0;
-							color: var(--color-text-secondary);
-						"
-					>
-						<p>&copy; 2026 Skills Exchange. All rights reserved.</p>
-					</footer>
-				</section>
+				<div class="dash-scroll">
+					<main class="main-content">
+						<!-- Page: Home -->
+						<section id="page-home" class="page active">
+						<!-- Hero section -->
+						<div class="hero">
+							<h2>Skills Exchange</h2>
+							<p>
+								Exchange skills with others using our credit-based
+								platform. Teach what you know, learn what you don't.
+							</p>
+							<div class="hero-buttons">
+								<button
+									class="btn btn-secondary"
+									data-page="offers"
+								>
+									Browse Offers
+								</button>
+								<button
+									class="btn btn-primary"
+									data-page="register"
+								>
+									Get Started
+								</button>
+							</div>
+						</div>
+
+						<!-- How it works section -->
+						<div class="container">
+							<h2 class="section-heading">How it works</h2>
+							<div class="features">
+								<div class="feature-card">
+									<h3>Post a Skill</h3>
+									<p>
+										Share what you know and set your
+										availability
+									</p>
+								</div>
+								<div class="feature-card">
+									<h3>Find a Skill</h3>
+									<p>
+										Browse skills offered by others in the
+										community
+									</p>
+								</div>
+								<div class="feature-card">
+									<h3>Book a Session</h3>
+									<p>Schedule a video call using your credits</p>
+								</div>
+							</div>
+
+							<!-- Why us section -->
+							<h2 class="section-heading">Why us</h2>
+							<div class="features">
+								<div class="feature-card">
+									<h3>Learn from real people</h3>
+									<p>
+										Connect directly with experts and
+										enthusiasts
+									</p>
+								</div>
+								<div class="feature-card">
+									<h3>Teach what you know</h3>
+									<p>Share your skills and earn credits</p>
+								</div>
+								<div class="feature-card">
+									<h3>Schedule video sessions</h3>
+									<p>
+										Meet face-to-face through our integrated
+										video calls
+									</p>
+								</div>
+								<div class="feature-card">
+									<h3>Free to join</h3>
+									<p>Get started without any upfront cost</p>
+								</div>
+							</div>
+						</div>
+
+						<!-- Final call to action -->
+						<div class="hero" style="margin-top: 60px">
+							<p>Ready to start learning or teaching?</p>
+							<button class="btn btn-primary" data-page="register">
+								Join Now
+							</button>
+						</div>
+
+						<!-- Footer -->
+						<footer
+							style="
+								text-align: center;
+								padding: 40px 0;
+								color: var(--color-text-secondary);
+							"
+						>
+							<p>&copy; 2026 Skills Exchange. All rights reserved.</p>
+						</footer>
+					</section>
 
 				<!-- Edit Offer Modal -->
 				<div
@@ -315,9 +348,8 @@
 						</div>
 						<div id="modal-student-info" style="margin-bottom:var(--spacing-md);color:var(--color-text-secondary);"></div>
 						<div id="teacher-lessons-list"></div>
-						<!-- Final course comment — appears when all lessons are completed -->
 						<div id="teacher-final-comment-area" style="display:none;margin-top:var(--spacing-md);padding-top:var(--spacing-md);border-top:1px solid var(--color-border);">
-							<h4 style="margin-bottom:8px;">🏁 Final Course Comment</h4>
+							<h4 style="margin-bottom:8px;">Final Course Comment</h4>
 							<p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:8px;">
 								Overall report for this student. This will be visible to the student.
 							</p>
@@ -401,7 +433,7 @@
 					</div>
 				</section>
 
-				<section id="page-offers" class="page">
+				<section id="page-offers" class="page page-offers">
 					<!-- Hero Section -->
 					<div class="offers-hero">
 						<div class="offers-hero-bg"></div>
@@ -430,101 +462,140 @@
 									Filters
 								</button>
 							</div>
-							<div class="offers-trending">
-								<span class="offers-trending-label">Trending:</span>
-								<div class="offers-trending-tags">
-									<span class="offers-tag" data-skill="JavaScript">JavaScript</span>
-									<span class="offers-tag" data-skill="Design">Design</span>
-									<span class="offers-tag" data-skill="English">English</span>
-									<span class="offers-tag" data-skill="AI">AI</span>
-									<span class="offers-tag" data-skill="Python">Python</span>
-									<span class="offers-tag" data-skill="Marketing">Marketing</span>
+<div class="offers-trending">
+							<span class="offers-trending-label">Trending:</span>
+							<div class="offers-trending-tags">
+								<span class="offers-tag" data-skill="JavaScript">JavaScript</span>
+								<span class="offers-tag" data-skill="Design">Design</span>
+								<span class="offers-tag" data-skill="English">English</span>
+								<span class="offers-tag" data-skill="AI">AI</span>
+								<span class="offers-tag" data-skill="Python">Python</span>
+								<span class="offers-tag" data-skill="Marketing">Marketing</span>
+							</div>
+						</div>
+
+						<!-- Expandable Filter Panel -->
+						<div class="offers-filter-panel" id="offers-filter-panel">
+							<div class="offers-filter-panel-header">
+								<h3><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x="4" y="7"/><line x1="4" y="7" x="4" y="3"/><line x1="4" y="3" x="20" y="3"/><line x1="20" y="7" x="20" y="21"/><line x1="4" y1="21" x2="20" y2="21"/><circle cx="12" cy="14" r="4"/></svg> Filters</h3>
+								<button class="offers-filter-close" id="offers-filter-close">&times;</button>
+							</div>
+							<div class="offers-filter-panel-content">
+								<div class="offers-filter-group">
+									<label>Skill Level</label>
+									<div class="offers-level-options">
+										<button class="offers-level-btn" data-level="beginner">Beginner</button>
+										<button class="offers-level-btn" data-level="intermediate">Intermediate</button>
+										<button class="offers-level-btn" data-level="advanced">Advanced</button>
+									</div>
+								</div>
+								<div class="offers-filter-group">
+									<label>Credits Range</label>
+									<div class="offers-credits-range">
+										<input type="number" id="panel-credits-min" placeholder="Min" min="1" />
+										<span>to</span>
+										<input type="number" id="panel-credits-max" placeholder="Max" min="1" />
+									</div>
+								</div>
+								<div class="offers-filter-group">
+									<label>Lessons</label>
+									<div class="offers-lessons-options">
+										<button class="offers-lesson-btn" data-count="1-5">1-5</button>
+										<button class="offers-lesson-btn" data-count="6-10">6-10</button>
+										<button class="offers-lesson-btn" data-count="10+">10+</button>
+									</div>
+								</div>
+								<div class="offers-filter-actions">
+									<button class="btn btn-secondary" id="panel-clear-filters">Clear All</button>
+									<button class="btn btn-primary" id="panel-apply-filters">Apply Filters</button>
 								</div>
 							</div>
 						</div>
 					</div>
+				</div>
+			</div>
+		</div>
 
-					<div class="container offers-page-container">
-						<!-- Filters Sidebar -->
-						<aside class="offers-filters" id="offers-filters">
-							<div class="offers-filter-header">
-								<h3>Filters</h3>
-								<button class="offers-clear-filters" id="clear-filters">Clear All</button>
-							</div>
-							<div class="offers-filter-group">
-								<label>Skill Level</label>
-								<div class="offers-level-options">
-									<button class="offers-level-btn" data-level="beginner">Beginner</button>
-									<button class="offers-level-btn" data-level="intermediate">Intermediate</button>
-									<button class="offers-level-btn" data-level="advanced">Advanced</button>
-								</div>
-							</div>
-							<div class="offers-filter-group">
-								<label>Credits Range</label>
-								<div class="offers-credits-range">
-									<input type="number" id="credits-min" placeholder="Min" min="1" />
-									<span>to</span>
-									<input type="number" id="credits-max" placeholder="Max" min="1" />
-								</div>
-							</div>
-							<div class="offers-filter-group">
-								<label>Lessons</label>
-								<div class="offers-lessons-options">
-									<button class="offers-lesson-btn" data-count="1-5">1-5</button>
-									<button class="offers-lesson-btn" data-count="6-10">6-10</button>
-									<button class="offers-lesson-btn" data-count="10+">10+</button>
-								</div>
-							</div>
-						</aside>
+	<div class="offers-page-container">
+		<aside class="offers-filters" id="offers-filters">
+			<div class="offers-filter-header">
+				<h3>Filters</h3>
+				<button class="offers-clear-filters" id="clear-filters">Clear All</button>
+			</div>
+			<div class="offers-filter-group">
+				<label>Skill Level</label>
+				<div class="offers-level-options">
+					<button class="offers-level-btn" data-level="beginner">Beginner</button>
+					<button class="offers-level-btn" data-level="intermediate">Intermediate</button>
+					<button class="offers-level-btn" data-level="advanced">Advanced</button>
+				</div>
+			</div>
+			<div class="offers-filter-group">
+				<label>Credits Range</label>
+				<div class="offers-credits-range">
+					<input type="number" id="credits-min" placeholder="Min" min="1" />
+					<span>to</span>
+					<input type="number" id="credits-max" placeholder="Max" min="1" />
+				</div>
+			</div>
+			<div class="offers-filter-group">
+				<label>Lessons</label>
+				<div class="offers-lessons-options">
+					<button class="offers-lesson-btn" data-count="1-5">1-5</button>
+					<button class="offers-lesson-btn" data-count="6-10">6-10</button>
+					<button class="offers-lesson-btn" data-count="10+">10+</button>
+				</div>
+			</div>
+		</aside>
 
-						<!-- Main Content -->
-						<main class="offers-main">
-							<div class="offers-toolbar">
-								<div class="offers-results-info">
-									<span id="offers-count">0</span> offers found
-								</div>
-								<div class="offers-sort">
-									<select id="offers-sort">
-										<option value="newest">Newest First</option>
-										<option value="price-low">Price: Low to High</option>
-										<option value="price-high">Price: High to Low</option>
-									</select>
-								</div>
-							</div>
+		<!-- Main Content -->
+		<main class="offers-main">
+			<div class="offers-toolbar">
+				<div class="offers-results-info">
+					<span id="offers-count">0</span> offers found
+				</div>
+				<div class="offers-sort">
+					<select id="offers-sort">
+						<option value="newest">Newest First</option>
+						<option value="price-low">Price: Low to High</option>
+						<option value="price-high">Price: High to Low</option>
+					</select>
+				</div>
+			</div>
 
-							<!-- Teaching Offers Grid -->
-							<div id="teaching-offers-grid" class="offers-grid">
-								<div class="offers-skeleton">
-									<div class="skeleton-card"></div>
-									<div class="skeleton-card"></div>
-									<div class="skeleton-card"></div>
-									<div class="skeleton-card"></div>
-									<div class="skeleton-card"></div>
-									<div class="skeleton-card"></div>
-								</div>
-							</div>
+			<!-- Teaching Offers Grid -->
+			<div id="teaching-offers-grid" class="offers-grid">
+				<div class="offers-skeleton">
+					<div class="skeleton-card"></div>
+					<div class="skeleton-card"></div>
+					<div class="skeleton-card"></div>
+					<div class="skeleton-card"></div>
+					<div class="skeleton-card"></div>
+					<div class="skeleton-card"></div>
+				</div>
+			</div>
 
-							<!-- My Offers Section (for teachers) -->
-							<div id="my-offers-section" class="offers-my-section" style="display:none;">
-								<div class="section-header offers-section-header">
-									<h2>Your Teaching Offers</h2>
-									<button class="btn btn-primary" id="add-offer-btn">
-										<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-											<line x1="12" y1="5" x2="12" y2="19"></line>
-											<line x1="5" y1="12" x2="19" y2="12"></line>
-										</svg>
-										Create New Offer
-									</button>
-								</div>
-								<div id="my-offers-grid" class="offers-grid"></div>
-								<p id="my-offers-empty" class="no-offers-msg">No teaching offers yet. Create your first offer to start teaching!</p>
-							</div>
-						</main>
-					</div>
-				</section>
+			<!-- My Offers Section (for teachers) -->
+			<div id="my-offers-section" class="offers-my-section" style="display:none;">
+				<div class="section-header offers-section-header">
+					<h2>Your Teaching Offers</h2>
+					<button class="btn btn-primary" id="add-offer-btn">
+						<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<line x1="12" y1="5" x2="12" y2="19"></line>
+							<line x1="5" y1="12" x2="19" y2="12"></line>
+						</svg>
+						Create New Offer
+					</button>
+				</div>
+				<div id="my-offers-grid" class="offers-grid"></div>
+				<p id="my-offers-empty" class="no-offers-msg">No teaching offers yet. Create your first offer to start teaching!</p>
+			</div>
+		</main>
+	</div>
+</section>
 
-			<!-- Student: My Lesson Details Modal -->
-			<div id="student-lessons-modal" class="modal-overlay" style="display:none;">
+<!-- Student: My Lesson Details Modal -->
+<div id="student-lessons-modal" class="modal-overlay" style="display:none;">
 				<div class="modal-content lesson-details-modal">
 					<div class="modal-header">
 						<h3 id="sl-course-title">Course</h3>
@@ -532,9 +603,8 @@
 					</div>
 					<p id="sl-teacher-info" style="margin-bottom:12px;color:var(--color-text-secondary);"></p>
 					<div id="student-lessons-list"></div>
-					<!-- Final course comment from teacher to student -->
 					<div id="student-final-comment" class="student-final-comment" style="display:none;margin-top:var(--spacing-md);padding-top:var(--spacing-md);border-top:1px solid var(--color-border);">
-						<h4 style="margin-bottom:6px;">🏁 Final Course Comment</h4>
+						<h4 style="margin-bottom:6px;">Final Course Comment</h4>
 						<div id="student-final-comment-text" class="teacher-comment"></div>
 						<span id="student-final-comment-date" style="font-size:12px;color:var(--color-text-muted);"></span>
 					</div>
@@ -646,239 +716,164 @@
 				</section>
 
 				<section id="page-dashboard" class="page dash-page">
-					<div class="dash-app" id="dash-app">
-						<div class="dash-sidebar-overlay" id="dash-sidebar-overlay"></div>
+					<div class="dash-layout">
+						<div class="dash-center">
+								<section class="dash-hero">
+									<div class="dash-hero-grid">
+										<div>
+											<p class="dash-hero-eyebrow">Your workspace</p>
+											<h1 class="dash-hero-title" id="dash-welcome-title">Welcome back</h1>
+											<p class="dash-hero-sub" id="dash-welcome-sub">Track progress, connect with learners, and grow your skills.</p>
+											<div class="dash-hero-metrics">
+												<div class="dash-hero-metric">
+													<strong id="dash-hero-lessons">0</strong>
+													Lessons completed
+												</div>
+												<div class="dash-hero-metric">
+													<strong id="dash-hero-streak">3</strong>
+													Day streak
+												</div>
+											</div>
+										</div>
+										<div class="dash-progress-ring" id="dash-progress-ring" aria-hidden="true">
+											<svg width="120" height="120" viewBox="0 0 120 120">
+												<circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="10"/>
+												<circle id="dash-ring-progress" cx="60" cy="60" r="52" fill="none" stroke="#a5b4fc" stroke-width="10" stroke-linecap="round" stroke-dasharray="327" stroke-dashoffset="327" transform="rotate(-90 60 60)"/>
+											</svg>
+											<div class="dash-progress-ring-label">
+												<span id="dash-ring-pct">0%</span>
+												<span>Progress</span>
+											</div>
+										</div>
+									</div>
+								</section>
 
-						<aside class="dash-sidebar" id="dash-sidebar">
-							<div class="dash-sidebar-brand">
-								<div class="dash-brand-icon">SE</div>
-								<span class="dash-brand-text">Skills Exchange</span>
-							</div>
-							<nav class="dash-nav" aria-label="Main">
-								<a href="#" class="dash-nav-link active" data-page="dashboard" data-dash-nav="dashboard">
-									<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
-									Dashboard
-								</a>
-								<a href="#" class="dash-nav-link" data-page="offers" data-dash-nav="offers">
-									<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-									My Skills
-								</a>
-								<a href="#" class="dash-nav-link" data-dash-scroll="dash-learning">
-									<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-									Learning
-								</a>
-								<a href="#" class="dash-nav-link" data-page="messages" data-dash-nav="messages">
-									<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-									Messages
-								</a>
-								<a href="#" class="dash-nav-link" data-dash-scroll="dash-schedule">
-									<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-									Calendar
-								</a>
-								<a href="#" class="dash-nav-link" data-dash-scroll="dash-wallet">
-									<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
-									Wallet
-								</a>
-								<a href="#" class="dash-nav-link" data-page="profile" data-dash-nav="profile">
-									<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-									Settings
-								</a>
-							</nav>
-							<div class="dash-sidebar-foot">
-								<div class="dash-profile-mini">
-									<div class="dash-profile-avatar" id="dash-sidebar-avatar">?</div>
-									<div class="dash-profile-info">
-										<div class="dash-profile-name" id="dash-sidebar-name">User</div>
-										<div class="dash-profile-credits"><span id="dash-sidebar-credits">0</span> credits</div>
+								<div class="dash-stats">
+									<div class="dash-stat-card">
+										<div class="dash-stat-top">
+											<div class="dash-stat-icon indigo">📖</div>
+											<span class="dash-stat-trend" id="dash-trend-lessons">—</span>
+										</div>
+										<div class="dash-stat-value" id="dash-stat-active-lessons">0</div>
+										<div class="dash-stat-label">Active Lessons</div>
+									</div>
+									<div class="dash-stat-card">
+										<div class="dash-stat-top">
+											<div class="dash-stat-icon violet">🎓</div>
+											<span class="dash-stat-trend" id="dash-trend-teaching">—</span>
+										</div>
+										<div class="dash-stat-value" id="dash-stat-teaching">0</div>
+										<div class="dash-stat-label">Skills Teaching</div>
+									</div>
+									<div class="dash-stat-card">
+										<div class="dash-stat-top">
+											<div class="dash-stat-icon emerald">📚</div>
+											<span class="dash-stat-trend" id="dash-trend-learning">—</span>
+										</div>
+										<div class="dash-stat-value" id="dash-stat-learning">0</div>
+										<div class="dash-stat-label">Skills Learning</div>
+									</div>
+									<div class="dash-stat-card" id="dash-wallet">
+										<div class="dash-stat-top">
+											<div class="dash-stat-icon amber">💎</div>
+											<span class="dash-stat-trend">Balance</span>
+										</div>
+										<div class="dash-stat-value" id="dash-stat-credits">0</div>
+										<div class="dash-stat-label">Credits</div>
 									</div>
 								</div>
-								<button type="button" class="dash-upgrade-btn" data-page="offers">Explore Skills</button>
-							</div>
-						</aside>
 
-						<div class="dash-main">
-							<header class="dash-topbar">
-								<button type="button" class="dash-menu-toggle" id="dash-menu-toggle" aria-label="Menu">
-									<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
-								</button>
-								<div class="dash-search-wrap">
-									<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-									<input type="search" class="dash-search" id="dash-global-search" placeholder="Search skills, lessons, people..." />
-								</div>
-								<div class="dash-topbar-actions">
-									<button type="button" class="dash-icon-btn" aria-label="Notifications">
-										<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-										<span class="dash-badge-dot"></span>
-									</button>
-									<button type="button" class="dash-icon-btn" data-page="messages" aria-label="Messages">
-										<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-									</button>
-									<button type="button" class="dash-quick-btn" data-page="add-offer" id="add-offer-btn-dash"><span>+ New Offer</span></button>
-								</div>
-							</header>
-
-							<div class="dash-scroll">
-								<div class="dash-layout">
-									<div class="dash-center">
-										<section class="dash-hero">
-											<div class="dash-hero-grid">
-												<div>
-													<p class="dash-hero-eyebrow">Your workspace</p>
-													<h1 class="dash-hero-title" id="dash-welcome-title">Welcome back</h1>
-													<p class="dash-hero-sub" id="dash-welcome-sub">Track progress, connect with learners, and grow your skills.</p>
-													<div class="dash-hero-metrics">
-														<div class="dash-hero-metric">
-															<strong id="dash-hero-lessons">0</strong>
-															Lessons completed
-														</div>
-														<div class="dash-hero-metric">
-															<strong id="dash-hero-streak">3</strong>
-															Day streak
-														</div>
-													</div>
-												</div>
-												<div class="dash-progress-ring" id="dash-progress-ring" aria-hidden="true">
-													<svg width="120" height="120" viewBox="0 0 120 120">
-														<circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="10"/>
-														<circle id="dash-ring-progress" cx="60" cy="60" r="52" fill="none" stroke="#a5b4fc" stroke-width="10" stroke-linecap="round" stroke-dasharray="327" stroke-dashoffset="327" transform="rotate(-90 60 60)"/>
-													</svg>
-													<div class="dash-progress-ring-label">
-														<span id="dash-ring-pct">0%</span>
-														<span>Progress</span>
-													</div>
-												</div>
-											</div>
-										</section>
-
-										<div class="dash-stats">
-											<div class="dash-stat-card">
-												<div class="dash-stat-top">
-													<div class="dash-stat-icon indigo">📖</div>
-													<span class="dash-stat-trend" id="dash-trend-lessons">—</span>
-												</div>
-												<div class="dash-stat-value" id="dash-stat-active-lessons">0</div>
-												<div class="dash-stat-label">Active Lessons</div>
-											</div>
-											<div class="dash-stat-card">
-												<div class="dash-stat-top">
-													<div class="dash-stat-icon violet">🎓</div>
-													<span class="dash-stat-trend" id="dash-trend-teaching">—</span>
-												</div>
-												<div class="dash-stat-value" id="dash-stat-teaching">0</div>
-												<div class="dash-stat-label">Skills Teaching</div>
-											</div>
-											<div class="dash-stat-card">
-												<div class="dash-stat-top">
-													<div class="dash-stat-icon emerald">📚</div>
-													<span class="dash-stat-trend" id="dash-trend-learning">—</span>
-												</div>
-												<div class="dash-stat-value" id="dash-stat-learning">0</div>
-												<div class="dash-stat-label">Skills Learning</div>
-											</div>
-											<div class="dash-stat-card" id="dash-wallet">
-												<div class="dash-stat-top">
-													<div class="dash-stat-icon amber">💎</div>
-													<span class="dash-stat-trend">Balance</span>
-												</div>
-												<div class="dash-stat-value" id="dash-stat-credits">0</div>
-												<div class="dash-stat-label">Credits</div>
-											</div>
-										</div>
-
-										<div id="teacher-dashboard" style="display:none;">
-											<div class="dash-section-block">
-												<p class="dash-section-label">Teaching</p>
-												<div class="dash-panel">
-													<div class="dash-panel-head">
-														<h2 class="dash-panel-title">My Students</h2>
-													</div>
-													<div class="dash-panel-body">
-														<div id="teacher-enrollments-list" class="dash-lessons-grid">
-															<p class="dash-empty">Loading your students...</p>
-														</div>
-													</div>
-												</div>
-											</div>
-											<span id="stat-students" style="display:none">0</span>
-											<span id="stat-active" style="display:none">0</span>
-											<span id="stat-completed" style="display:none">0</span>
-										</div>
-
-										<div id="student-dashboard">
-											<div class="dash-section-block" id="dash-learning">
-												<p class="dash-section-label">Learning</p>
-												<div class="dash-panel">
-													<div class="dash-panel-head">
-														<h2 class="dash-panel-title">Continue Learning</h2>
-														<a href="#" class="dash-panel-link" data-page="offers">Browse offers →</a>
-													</div>
-													<div class="dash-panel-body">
-														<div id="student-enrollments-list" class="dash-lessons-grid">
-															<p class="dash-empty">Loading your enrollments...</p>
-														</div>
-													</div>
-												</div>
-											</div>
-											<span id="stat-enrollments" style="display:none">0</span>
-											<span id="stat-active-enrollments" style="display:none">0</span>
-											<span id="stat-lessons-completed" style="display:none">0</span>
-										</div>
-
-										<div class="dash-panel" id="dash-schedule">
-											<div class="dash-panel-head">
-												<h2 class="dash-panel-title">Upcoming Schedule</h2>
-											</div>
-											<div class="dash-panel-body" id="dash-calendar-list">
-												<p class="dash-empty">No upcoming sessions scheduled</p>
-											</div>
-										</div>
-
+								<div id="teacher-dashboard" style="display:none;">
+									<div class="dash-section-block">
+										<p class="dash-section-label">Teaching</p>
 										<div class="dash-panel">
 											<div class="dash-panel-head">
-												<h2 class="dash-panel-title">Recent Activity</h2>
+												<h2 class="dash-panel-title">My Students</h2>
 											</div>
 											<div class="dash-panel-body">
-												<div class="dash-timeline" id="dash-activity-feed">
-													<p class="dash-empty">Loading activity...</p>
+												<div id="teacher-enrollments-list" class="dash-lessons-grid">
+													<p class="dash-empty">Loading your students...</p>
 												</div>
 											</div>
 										</div>
 									</div>
+									<span id="stat-students" style="display:none">0</span>
+									<span id="stat-active" style="display:none">0</span>
+									<span id="stat-completed" style="display:none">0</span>
+								</div>
 
-									<aside class="dash-rail">
-										<div class="dash-rail-card glow">
-											<h3 class="dash-panel-title" style="margin-bottom:0.75rem">Learning Streak</h3>
-											<div class="dash-streak">
-												<div class="dash-streak-num" id="dash-rail-streak">3</div>
-												<div class="dash-streak-label">days in a row — keep it up!</div>
+								<div id="student-dashboard">
+									<div class="dash-section-block" id="dash-learning">
+										<p class="dash-section-label">Learning</p>
+										<div class="dash-panel">
+											<div class="dash-panel-head">
+												<h2 class="dash-panel-title">Continue Learning</h2>
+												<a href="#" class="dash-panel-link" data-page="offers">Browse offers →</a>
+											</div>
+											<div class="dash-panel-body">
+												<div id="student-enrollments-list" class="dash-lessons-grid">
+													<p class="dash-empty">Loading your enrollments...</p>
+												</div>
 											</div>
 										</div>
-										<div class="dash-rail-card">
-											<h3 class="dash-panel-title" style="margin-bottom:1rem">Daily Goals</h3>
-											<div class="dash-goal-item">
-												<div class="dash-goal-head"><span>Complete a lesson</span><span id="dash-goal-lessons">0/1</span></div>
-												<div class="dash-progress-track"><div class="dash-progress-fill" id="dash-goal-lessons-bar" style="width:0%"></div></div>
-											</div>
-											<div class="dash-goal-item">
-												<div class="dash-goal-head"><span>Send a message</span><span id="dash-goal-msg">0/1</span></div>
-												<div class="dash-progress-track"><div class="dash-progress-fill" id="dash-goal-msg-bar" style="width:0%"></div></div>
-											</div>
-											<div class="dash-achievement">
-												<span class="dash-achievement-icon">🏆</span>
-												<span class="dash-achievement-text" id="dash-achievement-text">Complete your first course</span>
-											</div>
+									</div>
+									<span id="stat-enrollments" style="display:none">0</span>
+									<span id="stat-active-enrollments" style="display:none">0</span>
+									<span id="stat-lessons-completed" style="display:none">0</span>
+								</div>
+
+								<div class="dash-panel" id="dash-schedule">
+									<div class="dash-panel-head">
+										<h2 class="dash-panel-title">Upcoming Schedule</h2>
+									</div>
+									<div class="dash-panel-body" id="dash-calendar-list">
+										<p class="dash-empty">No upcoming sessions scheduled</p>
+									</div>
+								</div>
+
+								<div class="dash-panel">
+									<div class="dash-panel-head">
+										<h2 class="dash-panel-title">Recent Activity</h2>
+									</div>
+									<div class="dash-panel-body">
+										<div class="dash-timeline" id="dash-activity-feed">
+											<p class="dash-empty">Loading activity...</p>
 										</div>
-										<div class="dash-rail-card">
-											<div class="dash-panel-head" style="padding:0;border:0;margin-bottom:0.75rem">
-												<h3 class="dash-panel-title">Messages</h3>
-												<a href="#" class="dash-panel-link" data-page="messages">View all</a>
-											</div>
-											<div id="dash-messages-preview"></div>
-										</div>
-									</aside>
+									</div>
 								</div>
 							</div>
-						</div>
+
+							<aside class="dash-rail">
+								<div class="dash-rail-card glow">
+									<h3 class="dash-panel-title" style="margin-bottom:0.75rem">Learning Streak</h3>
+									<div class="dash-streak">
+										<div class="dash-streak-num" id="dash-rail-streak">3</div>
+										<div class="dash-streak-label">days in a row — keep it up!</div>
+									</div>
+								</div>
+								<div class="dash-rail-card">
+									<h3 class="dash-panel-title" style="margin-bottom:1rem">Daily Goals</h3>
+									<div class="dash-goal-item">
+										<div class="dash-goal-head"><span>Complete a lesson</span><span id="dash-goal-lessons">0/1</span></div>
+										<div class="dash-progress-track"><div class="dash-progress-fill" id="dash-goal-lessons-bar" style="width:0%"></div></div>
+									</div>
+									<div class="dash-goal-item">
+										<div class="dash-goal-head"><span>Send a message</span><span id="dash-goal-msg">0/1</span></div>
+										<div class="dash-progress-track"><div class="dash-progress-fill" id="dash-goal-msg-bar" style="width:0%"></div></div>
+									</div>
+									<div class="dash-achievement">
+										<span class="dash-achievement-icon">🏆</span>
+										<span class="dash-achievement-text" id="dash-achievement-text">Complete your first course</span>
+									</div>
+								</div>
+								<div class="dash-rail-card">
+									<div class="dash-panel-head" style="padding:0;border:0;margin-bottom:0.75rem">
+										<h3 class="dash-panel-title">Messages</h3>
+										<a href="#" class="dash-panel-link" data-page="messages">View all</a>
+									</div>
+									<div id="dash-messages-preview"></div>
+								</div>
+							</aside>
 					</div>
 				</section>
 
@@ -986,9 +981,9 @@
 						</div>
 					</div>
 				</section>
-			</main>
-		</div>
+		</main>
 	</div>
+</div>
 
 	<script src="js/api.js?v=4"></script>
 	<script src="js/dashboard.js?v=1"></script>
