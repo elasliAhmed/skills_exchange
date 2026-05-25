@@ -36,13 +36,14 @@ body {
     --color-primary: #4F46E5;
     --color-primary-darker: #4338CA;
     --color-primary-light: #818CF8;
-    --color-accent: #10B981;
-    --color-accent-dark: #059669;
+    --color-accent: #7C3AED;
+    --color-accent-dark: #6D28D9;
+    --color-success: #22C55E;
     --color-danger: #EF4444;
     --color-warning: #F59E0B;
     --color-info: #3B82F6;
 
-    --color-bg: #F3F4F6;
+    --color-bg: #F5F7FB;
     --color-surface: #FFFFFF;
     --color-border: #E5E7EB;
 

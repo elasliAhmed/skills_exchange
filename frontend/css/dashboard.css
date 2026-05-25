@@ -238,6 +238,14 @@ body.dash-mode {
     justify-content: center;
 }
 
+.dash-topbar-title {
+    flex: 1;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #1f2937;
+    letter-spacing: -0.02em;
+}
+
 .dash-search-wrap {
     flex: 1;
     max-width: 420px;

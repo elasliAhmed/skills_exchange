@@ -1,7 +1,7 @@
 /* UI Additions - Enhanced styling for Skills Exchange Platform */
 
 /* Page background with gradient accents */
-body {
+body:not(.app-mode):not(.dash-mode) {
     background:
         radial-gradient(
             1200px 500px at 10% -10%,
@@ -10,7 +10,7 @@ body {
         ),
         radial-gradient(
             900px 400px at 90% 0%,
-            rgba(16, 185, 128, 0.06),
+            rgba(124, 58, 237, 0.05),
             transparent 55%
         ),
         var(--color-bg);

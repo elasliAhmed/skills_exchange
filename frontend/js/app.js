@@ -2,8 +2,10 @@
 let apiInstance = new API();
 
 // Make functions globally available
+const APP_SHELL_PAGES = ['dashboard', 'offers', 'messages', 'profile', 'add-offer', 'video'];
+
 function showPage(page) {
-	if (!_authReady && (page !== 'login' && page !== 'register')) {
+	if (!_authReady && (page !== 'login' && page !== 'register' && page !== 'home')) {
 		console.debug('[showPage] waiting for auth…');
 		return;
 	}
@@ -12,10 +14,17 @@ function showPage(page) {
 		.forEach((p) => p.classList.remove("active"));
 	document.getElementById(`page-${page}`).classList.add("active");
 
+	const isAppPage = APP_SHELL_PAGES.includes(page);
 	document.body.classList.toggle("dash-mode", page === "dashboard");
+	document.body.classList.toggle("app-mode", isAppPage);
+	document.body.classList.toggle("home-mode", page === "home");
+
 	if (page === "dashboard" && typeof DashboardUI !== "undefined") {
 		DashboardUI.setActiveNav("dashboard");
 		DashboardUI.syncProfileSidebar();
+	}
+	if (typeof AppShell !== "undefined") {
+		AppShell.onNavigate(page);
 	}
 
 	updateNav();
@@ -126,12 +135,18 @@ document.addEventListener("DOMContentLoaded", async function () {
 	// Header scroll shadow
 	window.addEventListener('scroll', function() {
 		const header = document.querySelector('.header');
-		if (window.scrollY > 10) {
-			header.classList.add('scrolled');
-		} else {
-			header.classList.remove('scrolled');
+		const landingNav = document.getElementById('landing-nav');
+		if (header) {
+			if (window.scrollY > 10) header.classList.add('scrolled');
+			else header.classList.remove('scrolled');
+		}
+		if (landingNav) {
+			if (window.scrollY > 10) landingNav.classList.add('scrolled');
+			else landingNav.classList.remove('scrolled');
 		}
 	});
+
+	setupProfileTabs();
 });
 
 function setupEventListeners() {
@@ -710,9 +725,44 @@ function renderEnrollments(enrollments, filter) {
 		.join("");
 }
 
+function setupProfileTabs() {
+	document.querySelectorAll('[data-profile-tab]').forEach((btn) => {
+		btn.addEventListener('click', () => {
+			const tab = btn.dataset.profileTab;
+			document.querySelectorAll('.profile-tab').forEach((t) => {
+				t.classList.toggle('active', t.dataset.profileTab === tab);
+			});
+			document.querySelectorAll('.profile-tab-panel').forEach((p) => {
+				p.classList.toggle('active', p.id === `profile-tab-${tab}`);
+			});
+		});
+	});
+}
+
 async function loadProfile() {
 	updateNav();
+	const user = getUser();
+	if (user) {
+		const name = user.full_name || user.username || 'User';
+		const elName = document.getElementById('profile-display-name');
+		const elUser = document.getElementById('profile-display-username');
+		const elAvatar = document.getElementById('profile-avatar-lg');
+		const elCredits = document.getElementById('profile-stat-credits');
+		const form = document.getElementById('profile-form');
+		if (elName) elName.textContent = name;
+		if (elUser) elUser.textContent = '@' + (user.username || 'user');
+		if (elCredits) elCredits.textContent = user.credits ?? 0;
+		if (form) {
+			if (form.full_name) form.full_name.value = user.full_name || '';
+			if (form.bio) form.bio.value = user.bio || '';
+		}
+		if (elAvatar && typeof DashboardUI !== 'undefined') {
+			elAvatar.textContent = DashboardUI.initials(name);
+			elAvatar.style.background = DashboardUI.avatarColor(user.id);
+		}
+	}
 	loadUserTeachingOffers();
+	if (typeof AppShell !== 'undefined') AppShell.syncAllProfiles();
 }
 
 async function loadUserTeachingOffers() {
@@ -722,29 +772,43 @@ async function loadUserTeachingOffers() {
 	}
 }
 
+function renderOfferCard(offer, opts = {}) {
+	const { mine = false } = opts;
+	const name = (offer.name || 'Untitled Skill').replace(/</g, '&lt;');
+	const desc = offer.description ? `<p class="offer-desc">${offer.description.replace(/</g, '&lt;')}</p>` : '';
+	const level = offer.skill_level ? `<span class="dash-market-tag">${offer.skill_level}</span>` : '';
+	const teacher = !mine && (offer.full_name || offer.username)
+		? `<p class="offer-teacher"><span class="offer-teacher-avatar">${(offer.full_name || offer.username)[0].toUpperCase()}</span>${offer.full_name || offer.username}</p>`
+		: '';
+	const actions = mine
+		? `<div class="offer-actions">
+            <button class="dash-btn dash-btn-ghost" onclick="openEditModal(${offer.offer_id}, '${(offer.name || '').replace(/'/g, "\\'")}', '${(offer.description || '').replace(/'/g, "\\'")}', '${(offer.skill_level || '').replace(/'/g, "\\'")}', '${(offer.lesson_format || '').replace(/'/g, "\\'")}', '${(offer.learner_gains || '').replace(/'/g, "\\'")}', ${offer.credits}, ${offer.lessons_count || 1})">Edit</button>
+            <button class="dash-btn dash-btn-ghost" style="color:#ef4444" onclick="deleteMyOffer(${offer.offer_id})">Delete</button>
+           </div>`
+		: `<button class="dash-btn dash-btn-primary enroll-btn" onclick="enrollInOffer(${offer.offer_id})">Enroll now</button>`;
+	return `
+        <div class="dash-market-card offer-card" data-offer-id="${offer.offer_id || ''}">
+            <h4>${name}</h4>
+            ${teacher}
+            ${desc}
+            <div class="dash-market-meta">${level}<span class="dash-market-tag">${offer.lessons_count || 1} lessons</span></div>
+            <div class="dash-market-footer">
+                <span class="dash-market-credits">${offer.credits} credits / lesson</span>
+            </div>
+            ${actions}
+        </div>`;
+}
+
 function renderUserTeachingOffers(offers) {
 	const container = document.getElementById("my-teaching-offers");
+	if (!container) return;
+	const elTeaching = document.getElementById("profile-stat-teaching");
+	if (elTeaching) elTeaching.textContent = offers?.length ?? 0;
 	if (!offers || offers.length === 0) {
-		container.innerHTML = '<p class="muted">You have no teaching offers yet.</p>';
+		container.innerHTML = '<p class="no-offers-msg">You have no teaching offers yet.</p>';
 		return;
 	}
-	container.innerHTML = offers
-		.map(
-			(offer) => `
-        <div class="skill-card offer-card" data-offer-id="${offer.offer_id}">
-            <h4>${offer.name || 'Untitled Skill'}</h4>
-            <p>Credits: ${offer.credits} / lesson</p>
-            <p class="offer-lessons">${offer.lessons_count || 1} lesson${offer.lessons_count !== 1 ? 's' : ''}</p>
-            <div class="offer-actions">
-                <button class="btn btn-secondary" onclick="openEditModal(${offer.offer_id}, '${(offer.name || '').replace(/'/g, "\\'")}', '${(offer.description || '').replace(/'/g, "\\'")}', '${(offer.skill_level || '').replace(/'/g, "\\'")}', '${(offer.lesson_format || '').replace(/'/g, "\\'")}', '${(offer.learner_gains || '').replace(/'/g, "\\'")}', ${offer.credits}, ${offer.lessons_count || 1})">Edit</button>
-                <button class="btn btn-danger" onclick="deleteMyOffer(${offer.offer_id})">Delete</button>
-            </div>
-            <button class="btn btn-primary" style="width:100%;margin-top:6px;" onclick="loadOfferLearners(${offer.offer_id})">View Learners</button>
-            <div id="learners-${offer.offer_id}" class="learners-inline" style="display:none;"></div>
-        </div>
-    `,
-		)
-		.join("");
+	container.innerHTML = offers.map((o) => renderOfferCard(o, { mine: true })).join("");
 }
 
 async function deleteMyOffer(offer_id) {
@@ -881,23 +945,7 @@ function renderMyOffers(offers) {
 		container.innerHTML = '<p class="no-offers-msg">No offers yet. Create your first offer above.</p>';
 		return;
 	}
-	container.innerHTML = offers
-		.map(
-			(offer) => `
-        <div class="skill-card offer-card" data-offer-id="${offer.offer_id}">
-            <h4>${offer.name || 'Untitled Skill'}</h4>
-            ${offer.description ? `<p class="offer-desc">${offer.description}</p>` : ''}
-            <span class="status-badge status-${offer.type || 'active'}">${offer.type || 'Active'}</span>
-            <p class="offer-credits">${offer.credits} credits / lesson</p>
-            <p class="offer-lessons">${offer.lessons_count || 1} lesson${offer.lessons_count !== 1 ? 's' : ''}</p>
-            <div class="offer-actions" style="margin-top: 12px;">
-                <button class="btn btn-secondary" onclick="openEditModal(${offer.offer_id}, '${(offer.name || '').replace(/'/g, "\\'")}', '${(offer.description || '').replace(/'/g, "\\'")}', '${(offer.skill_level || '').replace(/'/g, "\\'")}', '${(offer.lesson_format || '').replace(/'/g, "\\'")}', '${(offer.learner_gains || '').replace(/'/g, "\\'")}', ${offer.credits}, ${offer.lessons_count || 1})">Edit</button>
-                <button class="btn btn-danger" onclick="deleteMyOffer(${offer.offer_id})">Delete</button>
-            </div>
-        </div>
-    `,
-		)
-		.join("");
+	container.innerHTML = offers.map((o) => renderOfferCard(o, { mine: true })).join("");
 }
 
 function cancelEnrollment(enrollmentId) {
@@ -911,26 +959,7 @@ function renderTeachingOffers(offers) {
 		container.innerHTML = '<p class="no-offers-msg">No teaching offers found.</p>';
 		return;
 	}
-	container.innerHTML = offers
-		.map(
-			(offer) => `
-        <div class="skill-card offer-card">
-            <h4>${offer.name || 'Untitled Skill'}</h4>
-            <p class="offer-teacher">
-                <span class="offer-teacher-avatar">${(offer.full_name || offer.username || '?')[0].toUpperCase()}</span>
-                ${offer.full_name || offer.username}
-            </p>
-            ${offer.description ? `<p class="offer-desc">${offer.description}</p>` : ''}
-            ${offer.skill_level ? `<p class="offer-level">Level: ${offer.skill_level}</p>` : ''}
-            ${offer.lesson_format ? `<p class="offer-format"><b>How it works:</b> ${offer.lesson_format}</p>` : ''}
-            ${offer.learner_gains ? `<p class="offer-gains"><b>What you'll get:</b> ${offer.learner_gains}</p>` : ''}
-            <p class="offer-credits">${offer.credits} credits / lesson</p>
-            <p class="offer-lessons">${offer.lessons_count || 1} lesson${offer.lessons_count !== 1 ? 's' : ''}</p>
-            <button class="btn btn-primary enroll-btn" onclick="enrollInOffer(${offer.offer_id})">Enroll</button>
-        </div>
-    `,
-		)
-		.join("");
+	container.innerHTML = offers.map((o) => renderOfferCard(o, { mine: false })).join("");
 }
 
 async function enrollInOffer(offer_id) {

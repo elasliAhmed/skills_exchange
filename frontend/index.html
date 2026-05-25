@@ -11,7 +11,10 @@
 			rel="stylesheet"
 		/>
 		<link rel="stylesheet" href="/skills_exchange/frontend/css/style.css" />
+		<link rel="stylesheet" href="/skills_exchange/frontend/css/design-system.css" />
 		<link rel="stylesheet" href="/skills_exchange/frontend/css/auth.css" />
+		<link rel="stylesheet" href="/skills_exchange/frontend/css/landing.css" />
+		<link rel="stylesheet" href="/skills_exchange/frontend/css/app-pages.css" />
 		<link
 			rel="stylesheet"
 			href="/skills_exchange/frontend/css/ui-additions.css"
@@ -120,99 +123,176 @@
 
 			<main class="main-content">
 				<section id="page-home" class="page active">
-					<!-- Hero section -->
-					<div class="hero">
-						<h2>Skills Exchange</h2>
-						<p>
-							Exchange skills with others using our credit-based
-							platform. Teach what you know, learn what you don't.
-						</p>
-						<div class="hero-buttons">
-							<button
-								class="btn btn-secondary"
-								data-page="offers"
-							>
-								Browse Offers
-							</button>
-							<button
-								class="btn btn-primary"
-								data-page="register"
-							>
-								Get Started
-							</button>
+					<div class="page-home-inner">
+						<nav class="landing-nav" id="landing-nav">
+							<div class="container">
+								<a href="#" data-page="home" class="landing-logo">
+									<span class="landing-logo-icon">SE</span>
+									Skills Exchange
+								</a>
+								<div class="landing-nav-links">
+									<a href="#" data-page="offers" class="user-only">Offers</a>
+									<a href="#" data-page="dashboard" class="user-only">Dashboard</a>
+									<a href="#" data-page="login" class="auth-only">Login</a>
+									<a href="#" data-page="register" class="auth-only landing-cta-nav">Get Started</a>
+									<a href="#" data-page="dashboard" class="user-only landing-cta-nav">Open Dashboard</a>
+								</div>
+							</div>
+						</nav>
+
+						<section class="landing-hero">
+							<div class="landing-hero-content">
+								<div class="landing-badge">
+									<span class="landing-badge-dot"></span>
+									Credit-based skill marketplace
+								</div>
+								<h1>Teach what you know.<br /><span class="gradient-text">Learn what you need.</span></h1>
+								<p class="landing-hero-desc">
+									Exchange skills with a global community. Earn credits teaching, spend them learning — all in one premium platform built for modern learners.
+								</p>
+								<div class="landing-hero-actions">
+									<button class="btn btn-primary" data-page="register">Start for free</button>
+									<button class="btn btn-secondary" data-page="offers">Browse skills</button>
+								</div>
+								<div class="landing-hero-visual">
+									<div class="landing-mockup">
+										<div class="landing-mockup-bar">
+											<span class="landing-mockup-dot"></span>
+											<span class="landing-mockup-dot"></span>
+											<span class="landing-mockup-dot"></span>
+										</div>
+										<div class="landing-mockup-body">
+											<div class="landing-mock-sidebar">
+												<div class="landing-mock-nav-item active"></div>
+												<div class="landing-mock-nav-item"></div>
+												<div class="landing-mock-nav-item"></div>
+												<div class="landing-mock-nav-item"></div>
+											</div>
+											<div class="landing-mock-main">
+												<div class="landing-mock-card hero-bar"></div>
+												<div class="landing-mock-card"></div>
+												<div class="landing-mock-card"></div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</section>
+
+						<div class="landing-stats">
+							<div class="landing-stat animate-in">
+								<strong>2,400+</strong>
+								<span>Active learners</span>
+							</div>
+							<div class="landing-stat animate-in animate-in-delay-1">
+								<strong>850+</strong>
+								<span>Skills offered</span>
+							</div>
+							<div class="landing-stat animate-in animate-in-delay-2">
+								<strong>12k+</strong>
+								<span>Sessions completed</span>
+							</div>
+							<div class="landing-stat animate-in animate-in-delay-3">
+								<strong>4.9</strong>
+								<span>Average rating</span>
+							</div>
 						</div>
+
+						<section class="landing-section">
+							<div class="landing-section-head">
+								<p class="landing-section-eyebrow">How it works</p>
+								<h2>Everything you need to grow</h2>
+								<p>A seamless flow from discovery to live video sessions — designed like the tools you already love.</p>
+							</div>
+							<div class="landing-features">
+								<div class="landing-feature-card">
+									<div class="landing-feature-icon">✨</div>
+									<h3>Post your expertise</h3>
+									<p>Create premium teaching offers, set your credits, and define structured lesson paths.</p>
+								</div>
+								<div class="landing-feature-card">
+									<div class="landing-feature-icon">🔍</div>
+									<h3>Discover skills</h3>
+									<p>Browse a curated marketplace of skills from real people — not generic courses.</p>
+								</div>
+								<div class="landing-feature-card">
+									<div class="landing-feature-icon">📹</div>
+									<h3>Learn live</h3>
+									<p>Book sessions, message your teacher, and join integrated video calls seamlessly.</p>
+								</div>
+								<div class="landing-feature-card">
+									<div class="landing-feature-icon">💎</div>
+									<h3>Earn credits</h3>
+									<p>Teach to earn, learn to grow. Your credits unlock new skills across the platform.</p>
+								</div>
+								<div class="landing-feature-card">
+									<div class="landing-feature-icon">📅</div>
+									<h3>Stay organized</h3>
+									<p>Track progress, upcoming sessions, and goals from your personal dashboard.</p>
+								</div>
+								<div class="landing-feature-card">
+									<div class="landing-feature-icon">💬</div>
+									<h3>Message instantly</h3>
+									<p>Discord-quality chat built in — stay connected with teachers and learners.</p>
+								</div>
+							</div>
+						</section>
+
+						<section class="landing-section">
+							<div class="landing-section-head">
+								<p class="landing-section-eyebrow">Testimonials</p>
+								<h2>Loved by learners worldwide</h2>
+								<p>Join thousands who've transformed how they learn and teach.</p>
+							</div>
+							<div class="landing-testimonials">
+								<div class="landing-testimonial">
+									<p>"The dashboard feels like Linear — clean, fast, and actually enjoyable to use every day."</p>
+									<div class="landing-testimonial-author">
+										<div class="landing-testimonial-avatar">SK</div>
+										<div>
+											<div class="landing-testimonial-name">Sarah K.</div>
+											<div class="landing-testimonial-role">Python learner</div>
+										</div>
+									</div>
+								</div>
+								<div class="landing-testimonial">
+									<p>"I earn credits teaching design and spend them on Spanish. It's the fairest exchange I've found."</p>
+									<div class="landing-testimonial-author">
+										<div class="landing-testimonial-avatar">MR</div>
+										<div>
+											<div class="landing-testimonial-name">Marcus R.</div>
+											<div class="landing-testimonial-role">UI/UX teacher</div>
+										</div>
+									</div>
+								</div>
+								<div class="landing-testimonial">
+									<p>"Video sessions, messaging, and scheduling in one place. No more juggling five different apps."</p>
+									<div class="landing-testimonial-author">
+										<div class="landing-testimonial-avatar">AL</div>
+										<div>
+											<div class="landing-testimonial-name">Aisha L.</div>
+											<div class="landing-testimonial-role">Full-stack student</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</section>
+
+						<section class="landing-cta-dark">
+							<h2>Ready to exchange skills?</h2>
+							<p>Join free today and start teaching or learning within minutes.</p>
+							<button class="btn btn-primary" data-page="register">Create your account</button>
+						</section>
+
+						<footer class="landing-footer">
+							<div class="landing-footer-links">
+								<a href="#" data-page="home">Home</a>
+								<a href="#" data-page="offers">Offers</a>
+								<a href="#" data-page="register">Register</a>
+							</div>
+							<p>&copy; 2026 Skills Exchange. All rights reserved.</p>
+						</footer>
 					</div>
-
-					<!-- How it works section -->
-					<div class="container">
-						<h2 class="section-heading">How it works</h2>
-						<div class="features">
-							<div class="feature-card">
-								<h3>Post a Skill</h3>
-								<p>
-									Share what you know and set your
-									availability
-								</p>
-							</div>
-							<div class="feature-card">
-								<h3>Find a Skill</h3>
-								<p>
-									Browse skills offered by others in the
-									community
-								</p>
-							</div>
-							<div class="feature-card">
-								<h3>Book a Session</h3>
-								<p>Schedule a video call using your credits</p>
-							</div>
-						</div>
-
-						<!-- Why us section -->
-						<h2 class="section-heading">Why us</h2>
-						<div class="features">
-							<div class="feature-card">
-								<h3>Learn from real people</h3>
-								<p>
-									Connect directly with experts and
-									enthusiasts
-								</p>
-							</div>
-							<div class="feature-card">
-								<h3>Teach what you know</h3>
-								<p>Share your skills and earn credits</p>
-							</div>
-							<div class="feature-card">
-								<h3>Schedule video sessions</h3>
-								<p>
-									Meet face-to-face through our integrated
-									video calls
-								</p>
-							</div>
-							<div class="feature-card">
-								<h3>Free to join</h3>
-								<p>Get started without any upfront cost</p>
-							</div>
-						</div>
-					</div>
-
-					<!-- Final call to action -->
-					<div class="hero" style="margin-top: 60px">
-						<p>Ready to start learning or teaching?</p>
-						<button class="btn btn-primary" data-page="register">
-							Join Now
-						</button>
-					</div>
-
-					<!-- Footer -->
-					<footer
-						style="
-							text-align: center;
-							padding: 40px 0;
-							color: var(--color-text-secondary);
-						"
-					>
-						<p>&copy; 2026 Skills Exchange. All rights reserved.</p>
-					</footer>
 				</section>
 
 				<!-- Edit Offer Modal -->
@@ -406,101 +486,118 @@
 					</div>
 				</div>
 
-				<section id="page-login" class="page">
-					<div class="auth-form-container">
-						<h2>Login</h2>
-						<form id="login-form">
-							<div class="form-group">
-								<label>Username</label>
-								<input type="text" name="username" required />
-							</div>
-							<div class="form-group">
-								<label>Password</label>
-								<input
-									type="password"
-									name="password"
-									required
-								/>
-							</div>
-							<button type="submit" class="btn btn-primary">
-								Login
-							</button>
-						</form>
-						<p class="auth-switch">
-							Don't have an account?
-							<a href="#" data-page="register">Register</a>
-						</p>
+				<section id="page-login" class="page page-auth">
+					<div class="auth-split">
+						<div class="auth-split-brand">
+							<h2>Welcome back</h2>
+							<p>Sign in to access your dashboard, messages, teaching offers, and credits wallet.</p>
+						</div>
+						<div class="auth-split-form">
+							<h2>Login</h2>
+							<form id="login-form">
+								<div class="form-group">
+									<label>Username</label>
+									<input type="text" name="username" required placeholder="Enter your username" />
+								</div>
+								<div class="form-group">
+									<label>Password</label>
+									<input type="password" name="password" required placeholder="Enter your password" />
+								</div>
+								<button type="submit" class="btn btn-primary btn-block">Sign in</button>
+							</form>
+							<p class="auth-switch">
+								Don't have an account?
+								<a href="#" data-page="register">Create one</a>
+							</p>
+						</div>
 					</div>
 				</section>
 
-				<section id="page-register" class="page">
-					<div class="auth-form-container">
-						<h2>Register</h2>
-						<form id="register-form">
-							<div class="form-group">
-								<label>Username</label>
-								<input type="text" name="username" required />
-							</div>
-							<div class="form-group">
-								<label>Email</label>
-								<input type="email" name="email" required />
-							</div>
-							<div class="form-group">
-								<label>Password</label>
-								<input
-									type="password"
-									name="password"
-									required
-								/>
-							</div>
-							<div class="form-group">
-								<label>Full Name</label>
-								<input type="text" name="full_name" />
-							</div>
-							<button type="submit" class="btn btn-primary">
-								Register
-							</button>
-						</form>
-						<p class="auth-switch">
-							Already have an account?
-							<a href="#" data-page="login">Login</a>
-						</p>
+				<section id="page-register" class="page page-auth">
+					<div class="auth-split">
+						<div class="auth-split-brand">
+							<h2>Join the community</h2>
+							<p>Start teaching, learning, and earning credits on a platform designed for real skill exchange.</p>
+						</div>
+						<div class="auth-split-form">
+							<h2>Create account</h2>
+							<form id="register-form">
+								<div class="form-group">
+									<label>Username</label>
+									<input type="text" name="username" required placeholder="Choose a username" />
+								</div>
+								<div class="form-group">
+									<label>Email</label>
+									<input type="email" name="email" required placeholder="you@example.com" />
+								</div>
+								<div class="form-group">
+									<label>Password</label>
+									<input type="password" name="password" required placeholder="Create a password" />
+								</div>
+								<div class="form-group">
+									<label>Full Name</label>
+									<input type="text" name="full_name" placeholder="Your display name" />
+								</div>
+								<button type="submit" class="btn btn-primary btn-block">Get started</button>
+							</form>
+							<p class="auth-switch">
+								Already have an account?
+								<a href="#" data-page="login">Sign in</a>
+							</p>
+						</div>
 					</div>
 				</section>
 
-				<section id="page-offers" class="page">
-					<div class="container">
-						<!-- My Offers Section -->
-						<div class="section-header">
-							<h2>My Offers</h2>
-							<button
-								class="btn btn-primary"
-								id="add-offer-btn"
-								style="margin-left: auto"
-							>
-								+ Create New Offer
-							</button>
-						</div>
-						<div id="my-offers-list" class="skills-grid"></div>
-						<p
-							id="my-offers-empty"
-							class="no-offers-msg"
-							style="display: none"
-						>
-							No offers yet. Create your first offer above.
-						</p>
+				<section id="page-offers" class="page page-app dash-page">
+					<div class="dash-app" data-app-shell="offers">
+						<div class="app-shell-sidebar-slot"></div>
+						<div class="dash-main">
+							<header class="dash-topbar">
+								<button type="button" class="dash-menu-toggle app-shell-menu-toggle" aria-label="Menu">
+									<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+								</button>
+								<div class="dash-topbar-title">Teaching Offers</div>
+								<div class="dash-topbar-actions">
+									<button type="button" class="dash-icon-btn" data-page="messages" aria-label="Messages">
+										<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+									</button>
+									<button type="button" class="dash-quick-btn" id="add-offer-btn"><span>+ New Offer</span></button>
+								</div>
+							</header>
+							<div class="dash-scroll">
+								<div class="dash-center" style="max-width:1200px;margin:0 auto">
+									<section class="dash-hero" style="padding:1.5rem 2rem">
+										<p class="dash-hero-eyebrow">Marketplace</p>
+										<h1 class="dash-hero-title" style="font-size:1.5rem">Skills &amp; Teaching Offers</h1>
+										<p class="dash-hero-sub">Create your offers or discover skills from the community.</p>
+									</section>
 
-						<hr class="section-divider" />
+									<div class="dash-panel">
+										<div class="dash-panel-head">
+											<h2 class="dash-panel-title">My Offers</h2>
+											<button type="button" class="dash-quick-btn" data-page="add-offer" style="padding:0.4rem 0.875rem;font-size:0.75rem"><span>+ Create</span></button>
+										</div>
+										<div class="dash-panel-body">
+											<div id="my-offers-list" class="dash-offers-grid"></div>
+											<p id="my-offers-empty" class="no-offers-msg" style="display:none">No offers yet. Create your first offer above.</p>
+										</div>
+									</div>
 
-						<!-- Browse Offers Section -->
-						<div class="section-header">
-							<h2>Browse Offers</h2>
+									<div class="dash-panel">
+										<div class="dash-panel-head">
+											<h2 class="dash-panel-title">Browse Offers</h2>
+										</div>
+										<div class="dash-panel-body">
+											<div id="teaching-offers-list" class="dash-offers-grid">
+												<p class="no-offers-msg">Loading offers...</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
-					<div id="teaching-offers-list" class="skills-grid">
-						<p class="no-offers-msg">Loading offers...</p>
 					</div>
-				</div>
-			</section>
+				</section>
 
 			<!-- Student: My Lesson Details Modal -->
 			<div id="student-lessons-modal" class="modal-overlay" style="display:none;">
@@ -523,9 +620,26 @@
 				</div>
 			</div>
 
-				<section id="page-add-offer" class="page">
-					<div class="auth-form-container">
-						<h2>Create Teaching Offer</h2>
+				<section id="page-add-offer" class="page page-app dash-page">
+					<div class="dash-app" data-app-shell="add-offer">
+						<div class="app-shell-sidebar-slot"></div>
+						<div class="dash-main">
+							<header class="dash-topbar">
+								<button type="button" class="dash-menu-toggle app-shell-menu-toggle" aria-label="Menu">
+									<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+								</button>
+								<div class="dash-topbar-title">Create Offer</div>
+								<div class="dash-topbar-actions">
+									<button type="button" class="dash-quick-btn" data-page="offers"><span>← Back to Offers</span></button>
+								</div>
+							</header>
+							<div class="dash-scroll">
+								<div class="dash-form-panel">
+									<div class="dash-panel">
+										<div class="dash-panel-head">
+											<h2 class="dash-panel-title">New Teaching Offer</h2>
+										</div>
+										<div class="dash-panel-body">
 						<form id="add-offer-form">
 							<div class="form-group">
 								<label for="offer-skill-name"
@@ -617,10 +731,15 @@
 								required
 							/>
 						</div>
-							<button type="submit" class="btn btn-primary">
+							<button type="submit" class="btn btn-primary dash-btn-primary" style="width:100%;padding:0.75rem">
 								Create Offer
 							</button>
 						</form>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
 					</div>
 				</section>
 
@@ -861,7 +980,20 @@
 					</div>
 				</section>
 
-				<section id="page-messages" class="page page-messages">
+				<section id="page-messages" class="page page-app page-messages dash-page">
+					<div class="dash-app" data-app-shell="messages">
+						<div class="app-shell-sidebar-slot"></div>
+						<div class="dash-main">
+							<header class="dash-topbar">
+								<button type="button" class="dash-menu-toggle app-shell-menu-toggle" aria-label="Menu">
+									<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+								</button>
+								<div class="dash-topbar-title">Messages</div>
+								<div class="dash-topbar-actions">
+									<button type="button" class="dash-quick-btn" data-page="add-offer"><span>+ New Offer</span></button>
+								</div>
+							</header>
+							<div class="dash-scroll messages-dash-scroll">
 					<div class="messages-page-wrap">
 						<div class="messages-app" id="messages-app">
 							<aside class="messages-sidebar" aria-label="Conversations">
@@ -924,47 +1056,156 @@
 							</div>
 						</div>
 					</div>
-				</section>
-
-				<section id="page-profile" class="page">
-					<div class="container">
-						<h2>My Profile</h2>
-						<form id="profile-form">
-							<div class="form-group">
-								<label>Full Name</label>
-								<input type="text" name="full_name" />
 							</div>
-							<div class="form-group">
-								<label>Bio</label>
-								<textarea name="bio" rows="4"></textarea>
-							</div>
-							<button type="submit" class="btn btn-primary">
-								Update Profile
-							</button>
-						</form>
+						</div>
 					</div>
 				</section>
 
-				<section id="page-video" class="page">
-					<div class="container">
-						<h2>Video Call</h2>
-						<div class="video-container">
-							<video id="local-video" autoplay muted></video>
-							<video id="remote-video" autoplay></video>
+				<section id="page-profile" class="page page-app dash-page">
+					<div class="dash-app" data-app-shell="profile">
+						<div class="app-shell-sidebar-slot"></div>
+						<div class="dash-main">
+							<header class="dash-topbar">
+								<button type="button" class="dash-menu-toggle app-shell-menu-toggle" aria-label="Menu">
+									<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+								</button>
+								<div class="dash-topbar-title">Profile &amp; Settings</div>
+								<div class="dash-topbar-actions">
+									<button type="button" class="dash-icon-btn" data-page="messages" aria-label="Messages">
+										<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+									</button>
+								</div>
+							</header>
+							<div class="dash-scroll">
+								<div class="dash-center" style="max-width:960px;margin:0 auto">
+									<div class="profile-hero" id="profile-hero">
+										<div class="profile-hero-inner">
+											<div class="profile-avatar-lg" id="profile-avatar-lg">?</div>
+											<div>
+												<h1 id="profile-display-name">Your Profile</h1>
+												<p class="profile-hero-sub" id="profile-display-username">@username</p>
+											</div>
+										</div>
+									</div>
+
+									<div class="profile-stats-row">
+										<div class="profile-stat-mini">
+											<strong id="profile-stat-credits">0</strong>
+											<span>Credits</span>
+										</div>
+										<div class="profile-stat-mini">
+											<strong id="profile-stat-teaching">0</strong>
+											<span>Teaching</span>
+										</div>
+										<div class="profile-stat-mini">
+											<strong id="profile-stat-learning">0</strong>
+											<span>Learning</span>
+										</div>
+										<div class="profile-stat-mini">
+											<strong id="profile-stat-reviews">0</strong>
+											<span>Reviews</span>
+										</div>
+									</div>
+
+									<div class="profile-tabs" role="tablist">
+										<button type="button" class="profile-tab active" data-profile-tab="settings">Settings</button>
+										<button type="button" class="profile-tab" data-profile-tab="skills">My Skills</button>
+										<button type="button" class="profile-tab" data-profile-tab="achievements">Achievements</button>
+										<button type="button" class="profile-tab" data-profile-tab="reviews">Reviews</button>
+									</div>
+
+									<div class="profile-tab-panel active" id="profile-tab-settings">
+										<div class="profile-form-panel">
+											<h3 class="dash-panel-title" style="margin-bottom:1rem">Account Settings</h3>
+											<form id="profile-form">
+												<div class="form-group">
+													<label>Full Name</label>
+													<input type="text" name="full_name" placeholder="Your display name" />
+												</div>
+												<div class="form-group">
+													<label>Bio</label>
+													<textarea name="bio" rows="4" placeholder="Tell others about yourself..."></textarea>
+												</div>
+												<button type="submit" class="btn btn-primary">Save changes</button>
+											</form>
+										</div>
+									</div>
+
+									<div class="profile-tab-panel" id="profile-tab-skills">
+										<div class="dash-panel">
+											<div class="dash-panel-head">
+												<h2 class="dash-panel-title">Teaching Offers</h2>
+												<a href="#" class="dash-panel-link" data-page="offers">Manage →</a>
+											</div>
+											<div class="dash-panel-body">
+												<div id="my-teaching-offers" class="dash-offers-grid">
+													<p class="no-offers-msg">Loading your skills...</p>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="profile-tab-panel" id="profile-tab-achievements">
+										<div class="profile-achievement-grid">
+											<div class="profile-achievement">
+												<div class="profile-achievement-icon">🎯</div>
+												<span>First Lesson</span>
+											</div>
+											<div class="profile-achievement">
+												<div class="profile-achievement-icon">🔥</div>
+												<span>3-Day Streak</span>
+											</div>
+											<div class="profile-achievement">
+												<div class="profile-achievement-icon">⭐</div>
+												<span>Top Teacher</span>
+											</div>
+											<div class="profile-achievement">
+												<div class="profile-achievement-icon">🏆</div>
+												<span>Course Complete</span>
+											</div>
+										</div>
+									</div>
+
+									<div class="profile-tab-panel" id="profile-tab-reviews">
+										<div class="dash-panel">
+											<div class="dash-panel-body">
+												<div id="profile-reviews-list">
+													<p class="no-offers-msg">No reviews yet. Complete a course to receive feedback.</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
-						<div class="video-controls">
-							<button
-								id="toggle-camera"
-								class="btn btn-secondary"
-							>
-								Toggle Camera
-							</button>
-							<button id="toggle-mic" class="btn btn-secondary">
-								Toggle Mic
-							</button>
-							<button id="end-call" class="btn btn-danger">
-								End Call
-							</button>
+					</div>
+				</section>
+
+				<section id="page-video" class="page page-app dash-page">
+					<div class="dash-app" data-app-shell="video">
+						<div class="app-shell-sidebar-slot"></div>
+						<div class="dash-main">
+							<header class="dash-topbar">
+								<button type="button" class="dash-menu-toggle app-shell-menu-toggle" aria-label="Menu">
+									<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+								</button>
+								<div class="dash-topbar-title">Video Session</div>
+							</header>
+							<div class="dash-scroll">
+								<div class="dash-panel video-page-panel" style="max-width:900px;margin:0 auto">
+									<div class="dash-panel-body">
+										<div class="video-container">
+											<video id="local-video" autoplay muted></video>
+											<video id="remote-video" autoplay></video>
+										</div>
+										<div class="video-controls">
+											<button id="toggle-camera" class="btn btn-secondary">Toggle Camera</button>
+											<button id="toggle-mic" class="btn btn-secondary">Toggle Mic</button>
+											<button id="end-call" class="btn btn-danger">End Call</button>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</section>
@@ -973,7 +1214,8 @@
 
 		<script src="js/api.js?v=3"></script>
 		<script src="js/dashboard.js?v=1"></script>
-		<script src="js/app.js?v=4"></script>
+		<script src="js/shell.js?v=1"></script>
+		<script src="js/app.js?v=5"></script>
 		<script src="js/messages.js?v=8"></script>
 		<script src="js/video.js"></script>
 	</body>

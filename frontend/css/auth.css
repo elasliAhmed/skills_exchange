@@ -1,9 +1,46 @@
-/* Auth Styles — aligned with design brief palette */
+/* Auth — premium split layout */
+.page-auth {
+    min-height: 100vh;
+}
+
+.page-auth.active {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-split {
+    animation: dsSlideUp 0.4s ease;
+}
+
+.auth-split-form .auth-switch {
+    margin-top: 1.25rem;
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+}
+
+.auth-split-form .auth-switch a {
+    color: var(--color-primary);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.auth-split-form .auth-switch a:hover {
+    text-decoration: underline;
+}
+
+.btn-block {
+    width: 100%;
+    padding: 0.75rem 1.25rem;
+    font-size: 1rem;
+}
+
 .auth-form-container {
     background: var(--color-surface);
     padding: var(--spacing-xl);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md);
+    border-radius: 20px;
+    box-shadow: var(--shadow-card);
     border: 1px solid var(--color-border);
 }
 
@@ -11,41 +48,30 @@
     color: var(--color-text-primary);
     margin-bottom: var(--spacing-xl);
     text-align: center;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-xs);
-    margin-bottom: 0;
+    font-weight: 800;
+    letter-spacing: -0.02em;
 }
 
 .form-group label {
     display: block;
     color: var(--color-text-secondary);
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
 }
 
 .form-group input {
     width: 100%;
-    padding: 10px 12px;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
+    padding: 0.7rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
     font-size: 0.9375rem;
     font-family: 'Inter', sans-serif;
-    transition: border-color var(--transition-fast),
-                box-shadow var(--transition-fast);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .form-group input:focus {
     outline: none;
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25);
-}
-
-.btn-block {
-    width: 100%;
-    padding: 10px 20px;
-    font-size: 0.9375rem;
+    border-color: #818cf8;
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
 }

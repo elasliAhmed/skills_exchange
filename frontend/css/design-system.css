@@ -1,0 +1,181 @@
+/* ==========================================================================
+   Skills Exchange — Global design system (Dashboard-aligned)
+   ========================================================================== */
+
+:root {
+    --color-primary: #4f46e5;
+    --color-primary-darker: #4338ca;
+    --color-primary-light: #818cf8;
+    --color-accent: #7c3aed;
+    --color-accent-dark: #6d28d9;
+    --color-success: #22c55e;
+    --color-bg: #f5f7fb;
+    --color-surface: #ffffff;
+    --color-border: #e5e7eb;
+    --color-text-primary: #111827;
+    --color-text-secondary: #6b7280;
+    --color-text-muted: #9ca3af;
+    --color-dark: #111827;
+    --dash-sidebar-bg: #0f172a;
+    --radius-card: 18px;
+    --radius-input: 14px;
+    --shadow-card: 0 4px 24px rgba(15, 23, 42, 0.06);
+    --shadow-card-hover: 0 12px 40px rgba(79, 70, 229, 0.12);
+    --shadow-modal: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
+}
+
+body {
+    background: var(--color-bg);
+}
+
+/* App shell pages — hide global header */
+body.app-mode .header {
+    display: none;
+}
+
+body.app-mode .main-content {
+    padding: 0;
+    max-width: none;
+}
+
+body.app-mode {
+    overflow: hidden;
+    background: #0f172a;
+}
+
+body.page-auth-active .header,
+body:has(#page-login.active) .header,
+body:has(#page-register.active) .header {
+    display: none;
+}
+
+body:has(#page-login.active) .main-content,
+body:has(#page-register.active) .main-content {
+    padding-top: 0;
+}
+
+.page.page-app.active {
+    display: block !important;
+    height: 100vh;
+    height: 100dvh;
+}
+
+/* Premium buttons */
+.btn-primary {
+    background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+    border: none;
+    color: #fff;
+    border-radius: 12px;
+    font-weight: 600;
+    box-shadow: 0 2px 12px rgba(79, 70, 229, 0.35);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #4338ca 0%, #4f46e5 100%);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(79, 70, 229, 0.45);
+}
+
+.btn-secondary {
+    border-radius: 12px;
+    font-weight: 600;
+    border-color: #e2e8f0;
+    background: #fff;
+    transition: transform 0.15s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-secondary:hover {
+    border-color: #c7d2fe;
+    color: #4f46e5;
+    background: #f8fafc;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+}
+
+/* Forms — dashboard-aligned */
+.form-group input,
+.form-group select,
+.form-group textarea {
+    border-radius: var(--radius-input);
+    border-color: #e2e8f0;
+    padding: 0.7rem 1rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #818cf8;
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
+}
+
+/* Premium modals */
+.modal-overlay {
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(6px);
+    animation: dsFadeIn 0.2s ease;
+}
+
+.modal-content {
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    box-shadow: var(--shadow-modal);
+    animation: dsSlideUp 0.3s ease;
+    max-width: 560px;
+}
+
+.modal-header {
+    border-bottom-color: #f1f5f9;
+}
+
+.modal-header h3 {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.modal-close {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 1.5rem;
+}
+
+@keyframes dsFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes dsSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes dsFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-in {
+    animation: dsFadeUp 0.5s ease backwards;
+}
+
+.animate-in-delay-1 { animation-delay: 0.05s; }
+.animate-in-delay-2 { animation-delay: 0.1s; }
+.animate-in-delay-3 { animation-delay: 0.15s; }

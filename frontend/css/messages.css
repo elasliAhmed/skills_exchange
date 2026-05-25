@@ -1,21 +1,44 @@
 /* ==========================================================================
-   Messages / Chat — Modern messaging UI
-   Palette: #4F46E5 primary, #F5F7FB bg, #FFFFFF cards
+   Messages / Chat — Discord/Slack-inspired (Dashboard-aligned)
    ========================================================================== */
 
+@media (max-width: 768px) {
+    .page-messages .messages-app {
+        grid-template-columns: 1fr;
+        min-height: calc(100vh - 100px);
+    }
+    .page-messages .messages-sidebar {
+        max-height: 40vh;
+    }
+}
+
+.messages-dash-scroll {
+    padding: 1rem 1.5rem 1.5rem !important;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
 .page-messages .messages-page-wrap {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 1.5rem 1rem 2rem;
+    flex: 1;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .messages-app {
     display: grid;
     grid-template-columns: 320px 1fr;
-    min-height: calc(100vh - 140px);
-    max-height: 720px;
-    background: #ffffff;
-    border-radius: 16px;
+    flex: 1;
+    min-height: calc(100vh - 120px);
+    max-height: none;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(12px);
+    border-radius: 18px;
     border: 1px solid #e5e7eb;
     box-shadow: 0 4px 24px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
     overflow: hidden;
@@ -26,7 +49,7 @@
     display: flex;
     flex-direction: column;
     min-height: 0;
-    background: #f5f7fb;
+    background: linear-gradient(180deg, #f8fafc 0%, #f5f7fb 100%);
     border-right: 1px solid #e5e7eb;
 }
 
